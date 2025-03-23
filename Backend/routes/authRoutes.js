@@ -13,10 +13,10 @@ passport.authenticate("google",{scope:["profile","email"]})
 router.get("/google/callback",
 passport.authenticate("google",{failureRedirect:"/"}),
 (req,res)=>{
-    const token = jwt.sign({id:req.user._id},process.env.JWT_SECRET,{
+    const token = jwt.sign({id:req.user._id,email:req.user.email},process.env.JWT_SECRET,{
         expiresIn:"1hr", 
     })
-    res.redirect(`http://localhost:3000/dashboard?token=${token}`);
+    res.redirect(`http://localhost:${process.env.PORT}/dashboard?token=${token}`);
 }
 );
 
