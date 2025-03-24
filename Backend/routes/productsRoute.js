@@ -10,10 +10,58 @@ require("dotenv").config()
 
 ProductRouter.get("/", async (req, res) => {
   try {
-    const products = await Product.find();
-    res.status(200).json({ products: products.length });
+    let { search, category, brand, minPrice, maxPrice, size, sort, order, page = 1, limit = 10 } = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+    const skip = (page - 1) * limit;
+
+    let filter = {};
+
+    // 🔹 SEARCH functionality (search by name, brand, category)
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { brand: { $regex: search, $options: "i" } },
+        { category: { $regex: search, $options: "i" } }
+      ];
+    }
+
+    // 🔹 FILTER functionality
+    if (category) filter.category = category;
+    if (brand) filter.brand = brand;
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = parseFloat(minPrice);
+      if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+    }
+    if (size) filter.size = size;
+
+    // 🔹 SORTING functionality (default: newest products first)
+    let sortOptions = { createdAt: -1 };
+    if (sort) {
+      const orderValue = order === "asc" ? 1 : -1;
+      if (["price", "rating", "createdAt"].includes(sort)) {
+        sortOptions = { [sort]: orderValue };
+      }
+    }
+
+    // Fetching products with applied filters & sorting
+    const products = await Product.find(filter)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit);
+
+    const totalProducts = await Product.countDocuments(filter);
+
+    res.status(200).json({
+      totalProducts,
+      currentPage: page,
+      totalPages: Math.ceil(totalProducts / limit),
+      products,
+    });
   } catch (error) {
-    res.status(400).json({error:error.message})
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
@@ -492,6 +540,47 @@ ProductRouter.delete("/orderDelete/:id",authMiddleware,async(req,res)=>{
   }
 })
 
+// 🔹 POST a review for a product (Requires authentication)
+ProductRouter.post("/review/:id", authMiddleware, async (req, res) => {
+  try {
+    let token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+    }
+
+    let username;
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      username = decoded.email;
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      }
+      return res.status(400).json({ message: "Invalid token", error: error.message });
+    }
+    const { comment, rating } = req.body;
+    
+
+    if (!comment || rating === undefined) {
+      return res.status(400).json({ message: "Comment and rating are required" });
+    }
+
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    const review = { username, comment, rating, createdAt: new Date() };
+    product.reviews.push(review);
+
+    const totalRating = product.reviews.reduce((sum, r) => sum + r.rating, 0);
+    product.rating = totalRating / product.reviews.length;
+
+    await product.save();
+
+    res.status(200).json({ message: "Review added successfully", product });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
 
 module.exports = ProductRouter;
 
