@@ -1,0 +1,34 @@
+#free_shipping {
+  background-color: rgb(24, 106, 220);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+}
+
+/* Desktop (1025px and above) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  #free_shipping {
+    padding: 12px;
+    font-size: 20px;
+  }
+}
+
+/* Tablet (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  #free_shipping {
+    padding: 8px;
+    font-size: 16px;
+  }
+}
+
+/* Mobile (up to 767px) */
+@media (max-width: 767px) {
+  #free_shipping {
+    padding: 6px;
+    font-size: 14px;
+  }
+}
+
+
+

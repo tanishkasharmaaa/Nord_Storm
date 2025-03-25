@@ -188,14 +188,6 @@ ProductRouter.patch("/wishlistUpdate/:id", authMiddleware, async (req, res) => {
 
 // DELETE FROM WISHLIST 
 
-{/*  WILL WORK ON THIS TODAY */}
-{/*
-  -- CART FUNCTIONALITY
-  -- CART FUNCTIONALITY FOR DELETE AND UPDATE
-  -- ORDER HISTORY
-  10:30 START
-*/}
-
 ProductRouter.delete("/wishlistDelete/:id",authMiddleware, async (req, res) => {
   try {
     let deleteIdInWishlist = await wishList.findOne({_id:req.params.id});
@@ -427,7 +419,7 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
 
     // Create new order
     const newOrder = new Order({
-      user: username, // Using email as user identifier
+      user: username, 
       items,
       totalAmount,
       paymentMethod,
