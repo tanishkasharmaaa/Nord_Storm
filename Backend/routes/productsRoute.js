@@ -10,7 +10,7 @@ require("dotenv").config()
 
 ProductRouter.get("/", async (req, res) => {
   try {
-    let { search, category, brand, minPrice, maxPrice, size, sort, order, page = 1, limit = 10 } = req.query;
+    let { search, category, brand, minPrice, maxPrice, size, sort, order, page = 1, limit  } = req.query;
 
     page = parseInt(page);
     limit = parseInt(limit);
