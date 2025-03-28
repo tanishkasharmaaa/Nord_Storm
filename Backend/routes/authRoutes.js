@@ -16,7 +16,7 @@ passport.authenticate("google",{failureRedirect:"/"}),
     const token = jwt.sign({id:req.user._id,email:req.user.email},process.env.JWT_SECRET,{
         expiresIn:"2d", 
     })
-    res.redirect(`http://localhost:${process.env.PORT}/dashboard?token=${token}`);
+    res.redirect(`https://nord-storm.onrender.com/dashboard?token=${token}`);
 }
 );
 
