@@ -12,7 +12,7 @@ jwt.verify(token,process.env.JWT_SECRET,function(err,decode){
         next()
     }
     else{
-        res.redirect(`http://localhost:${process.env.PORT}/auth/google`)
+        res.redirect(`https://nord-storm.onrender.com/auth/google`)
         res.status(400).json({message:"Please Login/SignUp"})
     }
 })
