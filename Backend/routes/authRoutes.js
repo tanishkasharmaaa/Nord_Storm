@@ -4,31 +4,45 @@ const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
-// Google Authentication Callback
-router.get("/google",
-passport.authenticate("google",{scope:["profile","email"]})
-)
-
-// Goggle Authentication callback
-router.get("/google/callback",
-passport.authenticate("google",{failureRedirect:"/"}),
-(req,res)=>{
-    const token = jwt.sign({id:req.user._id,email:req.user.email},process.env.JWT_SECRET,{
-        expiresIn:"2d", 
-    })
-    res.redirect(`http://localhost:5173/dashboard?token=${token}`);
-}
+// 🔹 Google Authentication (Initial Request)
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-router.get("/logout",(req,res,next)=>{
-    req.logout(function(err){
-        if(err){
-            return next(err);
-        }
-        req.session.destroy(()=>{
-        res.send("Logged out successfully")    
-        })
+// 🔹 Google Authentication Callback
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (req, res) => {
+    if (!req.user) {
+      return res.redirect("http://localhost:5173/login?error=Unauthorized");
+    }
+
+    // Generate JWT Token (Include user ID, email, and name)
+    const token = jwt.sign(
+      { id: req.user._id, email: req.user.email, name: req.user.name },
+      process.env.JWT_SECRET,
+      { expiresIn: "2d" }
+    );
+
+    // Redirect to frontend with token and encoded name
+    res.redirect(
+      `http://localhost:5173/?token=${token}&name=${encodeURIComponent(req.user.name)}`
+    );
+  }
+);
+
+// 🔹 Logout Route (Properly destroys session)
+router.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    req.session.destroy(() => {
+      res.redirect("http://localhost:5173");
     });
-    
-})
-module.exports= router
+  });
+});
+
+module.exports = router;
