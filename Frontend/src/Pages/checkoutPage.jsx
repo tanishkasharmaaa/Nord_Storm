@@ -12,8 +12,11 @@ import {
   VStack,
   Divider,
 } from "@chakra-ui/react";
+import {useNavigate} from 'react-router-dom'
+import { useEffect } from "react";
 
 function CheckoutPage() {
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState("Credit Card");
   const [upiPin, setUpiPin] = useState("");
   const [address, setAddress] = useState({
@@ -30,18 +33,18 @@ function CheckoutPage() {
   };
 
   const handlePlaceOrder = () => {
-    for (const key in address) {
-      if (!address[key]) {
-        alert("Please fill out all address fields.");
-        return;
-      }
+    if (Object.values(address).some((value) => !value.trim())) {
+      alert("Please fill out all address fields.");
+      return;
     }
-    if (paymentMethod === "UPI" && upiPin.length < 4) {
+
+    if (paymentMethod === "UPI" && (!/^\d{4}$/.test(upiPin))) {
       alert("Please enter a valid 4-digit UPI PIN.");
       return;
     }
+
     alert("Order Placed Successfully!");
-    navigate("/")
+    navigate("/");  // ✅ Ensure this works
   };
 
   return (
@@ -118,5 +121,25 @@ function CheckoutPage() {
     </Box>
   );
 }
+
+// const CheckoutPage=()=>{
+//   const [cart,setCart] =useState([]);
+//   const [totalAmount,setTotalAmount] = useState(0);
+//   const [address,setAddress] = useState({
+//     fullName:"",
+//     street:"",
+//     city:"",
+//     state:"",
+//     country:"",
+//     zipCode:"",
+//     phoneNumber:""
+//   })
+//   const [ paymentMethod,setPaymentMethod] =useState("COD");
+//   const navigate = useNavigate();
+
+//   useEffect(()=>{
+//     const savedCart = JSON
+//   })
+// }
 
 export default CheckoutPage;

@@ -23,13 +23,14 @@ function Routing() {
       <Route path="/women" element={<Women />} />
       <Route path="/kids" element={<Kids />} />
       <Route path="/bags" element={<Bags />} />
-      <Route path="/checkout" element={<CheckoutPage/>}/>
+      
       
 
       {/* Protected Route*/}
       <Route element={<ProtectedRoute/>}>
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/wishlist" element={<WishList/>}/>
+        <Route path="/checkout" element={<CheckoutPage/>}/>
       </Route>
 
       {/* Catch-all for undefined routes */}
