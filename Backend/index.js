@@ -12,9 +12,21 @@ require("./config/passport");
 const app = express();
 const port = process.env.PORT || 3000;
 
+const allowedOrigins = [
+    "https://nord-storm.vercel.app",
+    "https://another-allowed-site.com",
+    "http://localhost:3000", // For development
+  ];
+
 app.use(
     cors({
-      origin: "https://nord-storm.vercel.app", // Allow frontend URL
+        origin: function (origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) {
+              callback(null, true); // Allow request
+            } else {
+              callback(new Error("Not allowed by CORS")); // Block request
+            }
+          },
       methods: "GET,POST,PUT,DELETE,PATCH",
       credentials: true, // Allow cookies if needed
     })
