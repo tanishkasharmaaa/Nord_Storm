@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
     "https://nord-storm.vercel.app",
     "https://another-allowed-site.com",
-    "http://localhost:3000", // For development
+    "http://localhost:5173", // For development
   ];
 
 app.use(
