@@ -1,6 +1,6 @@
 import { Box, Flex, Image, useMediaQuery,Text, Link } from "@chakra-ui/react";
 import NordStorm_logo from "../assets/NordStorm_logo.png";
-import Search from "../Components/Search";
+import Search from "../Components/search";
 import Suggestions from "../Components/suggestion";
 import { useState, useEffect, useRef } from "react";
 import { User } from "lucide-react";
