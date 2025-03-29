@@ -1,5 +1,6 @@
 const express = require("express");
 const Product = require("../model/Product");
+const mongoose = require("mongoose"); 
 const authMiddleware = require("../middleware/authMiddleware");
 const ProductRouter = express.Router();
 const jwt = require("jsonwebtoken");
@@ -207,34 +208,36 @@ ProductRouter.delete("/wishlistDelete/:id",authMiddleware, async (req, res) => {
 
 // DISPLAY CART ITEMS
 
-ProductRouter.get("/cart",authMiddleware,async(req,res)=>{
+ProductRouter.get("/cart", authMiddleware, async (req, res) => {  
   try {
-    let token = req.headers.authorization?.split(" ")[1]
-    if (!token) {
-      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
-    }
-
-    let username;
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      username = decoded.email;
-    } catch (error) {
-        if (error.name === "TokenExpiredError") {
+      let token = req.headers.authorization?.split(" ")[1];
+      if (!token) {
           return res.redirect(`https://nord-storm.onrender.com/auth/google`);
-        }
-      return res.status(400).json({ message: "Invalid token", error });
-    }
+      }
 
-    const displayCartItems = await cart.find({username:username})
-    if(displayCartItems.length==0){
-      res.status(200).json({message:"No Product found"})
-    }
-    res.status(200).json({displayCartItems})
+      let username;
+      try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          username = decoded.email;
+      } catch (error) {
+          if (error.name === "TokenExpiredError") {
+              return res.redirect(`https://nord-storm.onrender.com/auth/google`);
+          }
+          return res.status(400).json({ message: "Invalid token", error });
+      }
+
+      const displayCartItems = await cart.find({ username: username });
+      if (displayCartItems.length === 0) {
+          return res.status(200).json({ message: "No Product found" });
+      }
+      res.status(200).json({ displayCartItems });
 
   } catch (error) {
-    return res.status(500).json({error: "An error occurred", details: error.message})
+      return res.status(500).json({ error: "An error occurred", details: error.message });
   }
-})
+});
+
+
 
 //  ADD BACK CART ITEM TO WISHLIST
 
@@ -285,95 +288,113 @@ ProductRouter.post("/addbackToWishlist/:id",authMiddleware,async(req,res)=>{
 
 //  ADD TO CART FUNCTIONALITY
 
-const mongoose = require("mongoose");
 
 ProductRouter.patch("/cartUpdate/:id", authMiddleware, async (req, res) => {
-  try {
-    let token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
-    }
-
-    let username;
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      username = decoded.email;
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        return res.redirect(`https://nord-storm.onrender.com/auth/google`);
-      }
-      return res.status(400).json({ message: "Invalid token", error });
-    }
+        console.log("Received request to add product to cart:", req.params.id);
 
-    const id = new mongoose.Types.ObjectId(req.params.id);
-
-    const checkInWishlist = await wishList.findOne({ _id: id });
-
-    if (!checkInWishlist) {
-      const checkProductInProdPage = await Product.findOne({ _id: id });
-
-      if (!checkProductInProdPage) {
-        return res.status(400).json({ message: "Product not found" });
-      } else {
-        const checkIfProductInCart = await cart.findOne({ product_id: id });
-        if (checkIfProductInCart) {
-          return res.status(409).json({ message: "Product already in cart" });
+        let token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            console.log("No token provided. Redirecting...");
+            return res.redirect(`https://nord-storm.onrender.com/auth/google`);
         }
 
-        const AddToCart = new cart({
-          product_id: checkProductInProdPage._id,
-          wishlist_id: null,
-          username: username,
-          name: checkProductInProdPage.name,
-          description: checkProductInProdPage.description,
-          price: checkProductInProdPage.price,
-          category: checkProductInProdPage.category,
-          brand: checkProductInProdPage.brand,
-          size: req.body.size || checkProductInProdPage.size,
-          color: checkProductInProdPage.color,
-          discount: checkProductInProdPage.discount,
-          stock: req.body.stock || 1,
-          images: checkProductInProdPage.images,
-          rating: checkProductInProdPage.rating,
-          reviews: checkProductInProdPage.reviews,
-        });
+        let username;
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            username = decoded.email;
+        } catch (error) {
+            console.error("Token verification failed:", error);
+            if (error.name === "TokenExpiredError") {
+                return res.redirect(`https://nord-storm.onrender.com/auth/google`);
+            }
+            return res.status(400).json({ message: "Invalid token", error });
+        }
 
-        await AddToCart.save();
-        return res.status(200).json({ message: "Product successfully added to cart" });
-      }
-    } else {
-      const checkIfProductInCart = await cart.findOne({ wishlist_id: id });
+        const productId = req.params.id;
 
-      if (checkIfProductInCart) {
-        return res.status(409).json({ message: "Product already in cart" });
-      }
+        // Validate productId format before using it
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            console.error("Invalid Product ID format:", productId);
+            return res.status(400).json({ message: "Invalid Product ID format" });
+        }
 
-      const AddToCart = new cart({
-        product_id: checkInWishlist.product_id,
-        wishlist_id: checkInWishlist._id,
-        username: username,
-        name: checkInWishlist.name,
-        description: checkInWishlist.description,
-        price: checkInWishlist.price,
-        category: checkInWishlist.category,
-        brand: checkInWishlist.brand,
-        size: req.body.size || checkInWishlist.size,
-        color: checkInWishlist.color,
-        discount: checkInWishlist.discount,
-        stock: req.body.stock || 1,
-        images: checkInWishlist.images,
-        rating: checkInWishlist.rating,
-        reviews: checkInWishlist.reviews,
-      });
+        const id = new mongoose.Types.ObjectId(productId);
 
-      await wishList.deleteOne({ _id: id });
-      await AddToCart.save();
-      return res.status(200).json({ message: "Product successfully added to cart" });
+        // Check if product is in wishlist
+        const checkInWishlist = await wishList.findOne({ _id: id });
+
+        if (!checkInWishlist) {
+            // If not in wishlist, check in the product collection
+            const checkProductInProdPage = await Product.findOne({ _id: id });
+
+            if (!checkProductInProdPage) {
+                console.error("Product not found in Product collection:", id);
+                return res.status(400).json({ message: "Product not found" });
+            } else {
+                const checkIfProductInCart = await cart.findOne({ product_id: id });
+
+                if (checkIfProductInCart) {
+                    return res.status(409).json({ message: "Product already in cart" });
+                }
+
+                const AddToCart = new cart({
+                    product_id: checkProductInProdPage._id,
+                    wishlist_id: null,
+                    username: username,
+                    name: checkProductInProdPage.name,
+                    description: checkProductInProdPage.description,
+                    price: checkProductInProdPage.price,
+                    category: checkProductInProdPage.category,
+                    brand: checkProductInProdPage.brand,
+                    size: req.body.size || checkProductInProdPage.size,
+                    color: checkProductInProdPage.color,
+                    discount: checkProductInProdPage.discount,
+                    stock: req.body.stock || 1,
+                    images: checkProductInProdPage.images,
+                    rating: checkProductInProdPage.rating,
+                    reviews: checkProductInProdPage.reviews,
+                });
+
+                await AddToCart.save();
+                return res.status(200).json({ message: "Product successfully added to cart" });
+            }
+        } else {
+            const checkIfProductInCart = await cart.findOne({ wishlist_id: id });
+
+            if (checkIfProductInCart) {
+                return res.status(409).json({ message: "Product already in cart" });
+            }
+
+            const AddToCart = new cart({
+                product_id: checkInWishlist.product_id,
+                wishlist_id: checkInWishlist._id,
+                username: username,
+                name: checkInWishlist.name,
+                description: checkInWishlist.description,
+                price: checkInWishlist.price,
+                category: checkInWishlist.category,
+                brand: checkInWishlist.brand,
+                size: req.body.size || checkInWishlist.size,
+                color: checkInWishlist.color,
+                discount: checkInWishlist.discount,
+                stock: req.body.stock || 1,
+                images: checkInWishlist.images,
+                rating: checkInWishlist.rating,
+                reviews: checkInWishlist.reviews,
+            });
+
+            await wishList.deleteOne({ _id: id });
+            await AddToCart.save();
+            return res.status(200).json({ message: "Product successfully added to cart" });
+        }
+    } catch (error) {
+        console.error("Error in cart update:", error);
+        return res.status(500).json({ error: "An error occurred", details: error.message });
     }
-  } catch (error) {
-    return res.status(500).json({ error: "An error occurred", details: error.message });
-  }
 });
+
+
 
 
 // DELETE ITEMS FROM CART FUNCTIONALITY

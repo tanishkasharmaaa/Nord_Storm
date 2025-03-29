@@ -1,28 +1,20 @@
-let jwt = require("jsonwebtoken");
-let dotenv = require("dotenv");
-dotenv.config();
+const jwt = require("jsonwebtoken");
 
-let authMiddleware = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
+
+    const token = authHeader.split(" ")[1].replace(/"/g, ""); // Remove extra quotes
+
     try {
-        let token = req.headers.authorization?.split(" ")[1];  // Check if token exists
-        if (!token) {
-            return res.status(401).json({ message: "Unauthorized. No token provided." });
-        }
-
-        jwt.verify(token, process.env.JWT_SECRET, function (err, decode) {
-            if (err) {
-                return res.status(400).json({ message: "Invalid token", error: err });
-            }
-
-            if (decode) {
-                req.user = decode;  // Store decoded user data in request
-                return next();  // Stop further execution here
-            } else {
-                return res.redirect("https://nord-storm.onrender.com/auth/google");
-            }
-        });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
     } catch (error) {
-        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+        return res.status(403).json({ message: "Invalid token" });
     }
 };
 
