@@ -98,7 +98,7 @@ ProductRouter.get("/wishlist",authMiddleware,async(req,res)=>{
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
     }
 
     let username;
@@ -107,7 +107,7 @@ ProductRouter.get("/wishlist",authMiddleware,async(req,res)=>{
       username = decoded.email;
     } catch (error) {
         if (error.name === "TokenExpiredError") {
-          return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+          return res.redirect(`https://nord-storm.onrender.com/auth/google`);
         }
       return res.status(400).json({ message: "Invalid token", error });
     }
@@ -132,7 +132,7 @@ ProductRouter.patch("/wishlistUpdate/:id", authMiddleware, async (req, res) => {
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
     }
 
     let username;
@@ -141,7 +141,7 @@ ProductRouter.patch("/wishlistUpdate/:id", authMiddleware, async (req, res) => {
       username = decoded.email;
     } catch (error) {
         if (error.name === "TokenExpiredError") {
-          return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+          return res.redirect(`https://nord-storm.onrender.com/auth/google`);
         }
       return res.status(400).json({ message: "Invalid token", error });
     }
@@ -211,7 +211,7 @@ ProductRouter.get("/cart",authMiddleware,async(req,res)=>{
   try {
     let token = req.headers.authorization?.split(" ")[1]
     if (!token) {
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
     }
 
     let username;
@@ -220,7 +220,7 @@ ProductRouter.get("/cart",authMiddleware,async(req,res)=>{
       username = decoded.email;
     } catch (error) {
         if (error.name === "TokenExpiredError") {
-          return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+          return res.redirect(`https://nord-storm.onrender.com/auth/google`);
         }
       return res.status(400).json({ message: "Invalid token", error });
     }
@@ -241,16 +241,17 @@ ProductRouter.get("/cart",authMiddleware,async(req,res)=>{
 ProductRouter.post("/addbackToWishlist/:id",authMiddleware,async(req,res)=>{
   try {
     let token = req.headers.authorization?.split(" ")[1];
-    if(!token){
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
-    }
+    if (!token) {
+  return res.redirect(`https://nord-storm.onrender.com/auth/google`);
+}
+
     let username;
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       username = decoded.email;
     } catch (error) {
         if (error.name === "TokenExpiredError") {
-          return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+          return res.redirect(`https://nord-storm.onrender.com/auth/google`);
         }
       return res.status(400).json({ message: "Invalid token", error });
     }
@@ -290,7 +291,7 @@ ProductRouter.patch("/cartUpdate/:id", authMiddleware, async (req, res) => {
   try {
     let token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
     }
 
     let username;
@@ -299,7 +300,7 @@ ProductRouter.patch("/cartUpdate/:id", authMiddleware, async (req, res) => {
       username = decoded.email;
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+        return res.redirect(`https://nord-storm.onrender.com/auth/google`);
       }
       return res.status(400).json({ message: "Invalid token", error });
     }
@@ -316,7 +317,7 @@ ProductRouter.patch("/cartUpdate/:id", authMiddleware, async (req, res) => {
       } else {
         const checkIfProductInCart = await cart.findOne({ product_id: id });
         if (checkIfProductInCart) {
-          return res.status(400).json({ message: "Product already in cart" });
+          return res.status(409).json({ message: "Product already in cart" });
         }
 
         const AddToCart = new cart({
@@ -344,7 +345,7 @@ ProductRouter.patch("/cartUpdate/:id", authMiddleware, async (req, res) => {
       const checkIfProductInCart = await cart.findOne({ wishlist_id: id });
 
       if (checkIfProductInCart) {
-        return res.status(400).json({ message: "Product already in cart" });
+        return res.status(409).json({ message: "Product already in cart" });
       }
 
       const AddToCart = new cart({
@@ -400,7 +401,7 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
   try {
     let token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
     }
 
     let username;
@@ -409,7 +410,7 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
       username = decoded.email;
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+        return res.redirect(`https://nord-storm.onrender.com/auth/google`);
       }
       return res.status(400).json({ message: "Invalid token", error: error.message });
     }
@@ -445,7 +446,7 @@ ProductRouter.get("/allOrders",authMiddleware,async(req,res)=>{
   try {
     let token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
     }
 
     let username;
@@ -454,7 +455,7 @@ ProductRouter.get("/allOrders",authMiddleware,async(req,res)=>{
       username = decoded.email;
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+        return res.redirect(`https://nord-storm.onrender.com/auth/google`);
       }
       return res.status(400).json({ message: "Invalid token", error: error.message });
     }
@@ -472,7 +473,7 @@ ProductRouter.get("/order/:id",authMiddleware,async(req,res)=>{
   try {
     let token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
     }
 
     let username;
@@ -481,7 +482,7 @@ ProductRouter.get("/order/:id",authMiddleware,async(req,res)=>{
       username = decoded.email;
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+        return res.redirect(`https://nord-storm.onrender.com/auth/google`);
       }
       return res.status(400).json({ message: "Invalid token", error: error.message });
     }
@@ -504,7 +505,7 @@ ProductRouter.delete("/orderDelete/:id",authMiddleware,async(req,res)=>{
   try {
     let token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
     }
 
     let username;
@@ -513,7 +514,7 @@ ProductRouter.delete("/orderDelete/:id",authMiddleware,async(req,res)=>{
       username = decoded.email;
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+        return res.redirect(`https://nord-storm.onrender.com/auth/google`);
       }
       return res.status(400).json({ message: "Invalid token", error: error.message });
     }
@@ -540,7 +541,7 @@ ProductRouter.post("/review/:id", authMiddleware, async (req, res) => {
   try {
     let token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
     }
 
     let username;
@@ -549,7 +550,7 @@ ProductRouter.post("/review/:id", authMiddleware, async (req, res) => {
       username = decoded.email;
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
+        return res.redirect(`https://nord-storm.onrender.com/auth/google`);
       }
       return res.status(400).json({ message: "Invalid token", error: error.message });
     }
