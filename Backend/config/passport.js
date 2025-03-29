@@ -8,11 +8,12 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.CALLBACK, // Ensure this matches Google Console
+      passReqToCallback: true
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
         console.log("Google Profile:", profile); // 🔹 Debugging log
-
+        console.log(process.env.CALLBACK)
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {

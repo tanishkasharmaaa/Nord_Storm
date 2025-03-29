@@ -1,9 +1,27 @@
+body{
+  font-family:Arial, sans-serif;
+}
+
 #free_shipping {
   background-color: rgb(24, 106, 220);
   color: white;
   text-align: center;
   padding: 10px;
   font-size: 18px;
+}
+
+#head{
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+}
+#search{
+  border: 1px solid grey;
+  
+}
+#search>input{
+  border:1px solid grey;
+  padding: 4px;
+  min-width: 400px;
 }
 
 /* Desktop (1025px and above) */

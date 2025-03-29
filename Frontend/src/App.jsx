@@ -1,17 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Home from './Pages/home'
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import './App.css';
+import Routing from './Components/routing';
+import LoadingScreen from "./Components/loadingScreen";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Get token from URL if it exists
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    if (token) {
+      // Store token in localStorage and clean URL
+      localStorage.setItem("authToken", token);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Check if user is authenticated
+    const storedToken = localStorage.getItem("authToken");
+    if (storedToken) {
+      setIsLoggedIn(true);
+    }
+
+    setLoading(false);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken"); // Clear token
+    setIsLoggedIn(false);
+    navigate("/"); // Redirect to home page
+  };
+
+  if (loading) return <LoadingScreen/>;
 
   return (
     <>
-      <Home/>
+       
+      <Routing isLoggedIn={isLoggedIn} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,0 +1,27 @@
+body{
+  font-family:Arial, sans-serif;
+}
+
+.rating {
+    display: flex;
+    flex-direction: row;
+    gap: 5px; /* Space between stars */
+  }
+  
+  .star {
+    font-size: 44px;
+    color: lightgray;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .star.filled {
+    color: rgb(24, 106, 220); /* Change this to any color you prefer */
+  }
+  
+  /* Hover effect */
+  .star:hover,
+  .star:hover ~ .star {
+    color: rgb(24, 106, 220);
+  }
+  

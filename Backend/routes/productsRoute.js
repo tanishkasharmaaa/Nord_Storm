@@ -284,93 +284,39 @@ ProductRouter.post("/addbackToWishlist/:id",authMiddleware,async(req,res)=>{
 
 //  ADD TO CART FUNCTIONALITY
 
-ProductRouter.patch("/cartUpdate/:id",authMiddleware,async(req,res)=>{
+ProductRouter.patch("/cartUpdate/:id", authMiddleware, async (req, res) => {
+  console.log("Received PATCH request for ID:", req.params.id);
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
+  
   try {
-    let token = req.headers.authorization?.split(" ")[1];
-    if(!token){
-      return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
-    }
-    let username;
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      username = decoded.email;
-    } catch (error) {
-        if (error.name === "TokenExpiredError") {
+      let token = req.headers.authorization?.split(" ")[1];
+      console.log("Extracted token:", token);
+      
+      if (!token) {
           return res.redirect(`http://localhost:${process.env.PORT}/auth/google`);
-        }
-      return res.status(400).json({ message: "Invalid token", error });
-    }
-
-    const checkInWishlist = await wishList.findOne({_id:req.params.id})
-    if(!checkInWishlist){
-      const checkProductInProdPage = await Product.findOne({_id:req.params.id})
-      if(!checkProductInProdPage){
-        return res.status(400).json({message:"Product not found"})
       }
-      else{
 
-        const checkIfProductInCart =await cart.findOne({product_id:req.params.id})
-        if(checkIfProductInCart){
-          res.status(400).json({message:"Product already in cart"})
-        }
-          const AddToCart = new cart({
-          product_id:checkProductInProdPage._id,
-          wishlist_id:null,
-          username:username,
-          name:checkProductInProdPage.name,
-          description:checkProductInProdPage.description,
-          price:checkProductInProdPage.price,
-          category:checkProductInProdPage.category,
-          brand:checkProductInProdPage.brand,
-          size:req.body.size||checkProductInProdPage.size,
-          color:checkProductInProdPage.color,
-          discount:checkProductInProdPage.discount,
-          stock:req.body.stock||1,
-          images:checkProductInProdPage.images,
-          rating:checkProductInProdPage.rating,
-          reviews:checkProductInProdPage.reviews
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("Decoded token:", decoded);
+      
+      const checkInWishlist = await wishList.findOne({ _id: req.params.id });
+      console.log("Wishlist product found:", checkInWishlist);
+
+      if (!checkInWishlist) {
+          const checkProductInProdPage = await Product.findOne({ _id: req.params.id });
+          console.log("Product found:", checkProductInProdPage);
           
-        })
-
-        await AddToCart.save()
-
-        res.status(200).json({message:"Product successfully added to cart"});
+          if (!checkProductInProdPage) {
+              return res.status(400).json({ message: "Product not found" });
+          }
       }
-    }
-    else{
-      const checkIfProductInCart= await cart.findOne({wishlist_id:req.params.id})
-      if(checkIfProductInCart){
-      res.status(400).json({message:"Product already in cart"})
-      }
-
-        const AddToCart = new cart({
-        product_id:checkInWishlist.product_id,
-        wishlist_id:checkInWishlist._id,
-        username:username,
-        name:checkInWishlist.name,
-        description:checkInWishlist.description,
-        price:checkInWishlist.price,
-        category:checkInWishlist.category,
-        brand:checkInWishlist.brand,
-        size:req.body.size||checkInWishlist.size,
-        color:checkInWishlist.color,
-        discount:checkInWishlist.discount,
-        stock:req.body.stock||1,
-        images:checkInWishlist.images,
-        rating:checkInWishlist.rating,
-        reviews:checkInWishlist.reviews
-
-      })
-     const deleteWishlistItem= await wishList.deleteOne({_id:req.params.id});
-
-      await AddToCart.save()
-      res.status(200).json({message:"Product successfully added to cart"});
-     }
-    
   } catch (error) {
-    return res.status(500).json({ error: "An error occurred", details: error.message });
+      console.error("Error:", error.message);
+      return res.status(500).json({ error: "An error occurred", details: error.message });
   }
-})
+});
+
 
 // DELETE ITEMS FROM CART FUNCTIONALITY
 
