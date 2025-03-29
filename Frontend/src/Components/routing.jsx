@@ -9,6 +9,7 @@ import Cart from "../Pages/cart";
 import WishList from "../Pages/wishlist";
 import SingleProductPage from "../Pages/singleProductPage";
 import ProtectedRoute from "../Routes/protectedRoute";
+import CheckoutPage from "../Pages/checkoutPage";
 
 function Routing() {
   return (
@@ -22,6 +23,7 @@ function Routing() {
       <Route path="/women" element={<Women />} />
       <Route path="/kids" element={<Kids />} />
       <Route path="/bags" element={<Bags />} />
+      <Route path="/checkout" element={<CheckoutPage/>}/>
       
 
       {/* Protected Route*/}

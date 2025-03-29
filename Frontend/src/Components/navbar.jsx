@@ -60,48 +60,73 @@ const Navbar = () => {
             <HamburgerIcon w={6} h={6} />
           </Button>
         ) : (
-         
-            <Flex gap={6} align="center">
-              {categories.map((category) => (
-                <Popover
-                  key={category}
-                  isOpen={selectedCategory === category}
-                  onClose={() => setSelectedCategory(null)}
-                >
-                  <PopoverTrigger>
-                    <Button
-                      bg="transparent"
-                      _hover={{ color: "blue.500", textDecoration: "underline" }}
-                      onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
-                    >
-                      {category}
-                    </Button>
-                    
-                  </PopoverTrigger>
-                  <Portal>
-                    <PopoverContent boxShadow="xl" borderRadius="lg" p={4} bg="white" width={'800px'} height={'400px'}>
-                      <PopoverArrow />
-                      <PopoverBody>
-                        <Link to={`/${category}`} onClick={() => setSelectedCategory(null)}>
-                          <Image src={categoriesImage[category]} alt={category} width="700px" />
-                        </Link>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Portal>
-                </Popover>
-              ))}
-              <Button bg="transparent"
-                      _hover={{ color: "blue.500", textDecoration: "underline" }} onClick={()=>navigate("/cart")}>Cart</Button>
-                      <Button bg="transparent"
-                      _hover={{ color: "blue.500", textDecoration: "underline" }} onClick={()=>navigate("/wishlist")}>WishList</Button>
+          <Flex gap={6} align="center">
+            {categories.map((category) => (
+              <Popover
+                key={category}
+                isOpen={selectedCategory === category}
+                onClose={() => setSelectedCategory(null)}
+              >
+                <PopoverTrigger>
+                  <Button
+                    bg="transparent"
+                    _hover={{ color: "blue.500", textDecoration: "underline" }}
+                    onClick={() =>
+                      setSelectedCategory(
+                        selectedCategory === category ? null : category
+                      )
+                    }
+                  >
+                    {category}
+                  </Button>
+                </PopoverTrigger>
+                <Portal>
+                  <PopoverContent
+                    boxShadow="xl"
+                    borderRadius="lg"
+                    p={4}
+                    bg="white"
+                    width={"800px"}
+                    height={"400px"}
+                  >
+                    <PopoverArrow />
+                    <PopoverBody>
+                      <Link
+                        to={`/${category}`}
+                        onClick={() => setSelectedCategory(null)}
+                      >
+                        <Image
+                          src={categoriesImage[category]}
+                          alt={category}
+                          width="700px"
+                        />
+                      </Link>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Portal>
+              </Popover>
+            ))}
+            <Button
+              bg="transparent"
+              _hover={{ color: "blue.500", textDecoration: "underline" }}
+              onClick={() => navigate("/cart")}
+            >
+              Cart
+            </Button>
+            <Button
+              bg="transparent"
+              _hover={{ color: "blue.500", textDecoration: "underline" }}
+              onClick={() => navigate("/wishlist")}
+            >
+              WishList
+            </Button>
 
-{checkLogin&&(
-                <Button colorScheme="blue" onClick={handleLogout} >
-                  Logout
-                </Button>
-              ) }
-            </Flex>
-          
+            {checkLogin && (
+              <Button colorScheme="blue" onClick={handleLogout}>
+                Logout
+              </Button>
+            )}
+          </Flex>
         )}
       </Flex>
 
@@ -109,20 +134,48 @@ const Navbar = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader fontSize="lg" borderBottomWidth="1px">Menu</DrawerHeader>
+          <DrawerHeader fontSize="lg" borderBottomWidth="1px">
+            Menu
+          </DrawerHeader>
           <DrawerBody>
             <VStack spacing={4} align="start">
               {categories.map((category) => (
-                <Button key={category} w="full" as={Link} to={`/${category}`} onClick={onClose}>
+                <Button
+                  key={category}
+                  w="full"
+                  as={Link}
+                  to={`/${category}`}
+                  onClick={onClose}
+                >
                   {category}
                 </Button>
               ))}
+              <Button
+             w="full"
+              onClick={() => navigate("/cart")}
+            >
+              Cart
+            </Button>
+            <Button
+            w="full"
+             
+              onClick={() => navigate("/wishlist")}
+            >
+              WishList
+            </Button>
               {checkLogin ? (
                 <Button colorScheme="red" onClick={handleLogout} w="full">
                   Logout
                 </Button>
               ) : (
-                <Button as={Link} to="https://nord-storm.onrender.com/auth/google" onClick={() => setCheckLogin(false)} color={"white"} w={"100%"} bgColor={"blue.500"}>
+                <Button
+                  as={Link}
+                  to="https://nord-storm.onrender.com/auth/google"
+                  onClick={() => setCheckLogin(false)}
+                  color={"white"}
+                  w={"100%"}
+                  bgColor={"blue.500"}
+                >
                   Sign Up / Log In
                 </Button>
               )}
@@ -135,6 +188,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
-

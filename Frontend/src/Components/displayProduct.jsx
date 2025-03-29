@@ -25,9 +25,11 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Select,
+  Select
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import ToastForCart from '../Components/toastForCart'
+import ToastForWishlist from "../Components/toastForWishlist";
 
 function DisplayProduct({ products }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -68,67 +70,103 @@ function DisplayProduct({ products }) {
   const [isLargerThan1024] = useMediaQuery("(min-width: 1024px)");
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
-  const AddProductToCart = async (selectedProduct) => {
+  const AddProductToCart = async (selectedProduct, selectSize, quantity) => {
     const token = localStorage.getItem("authToken");
-    const username = localStorage.getItem("username"); // No need for JSON.stringify()
-    
-    if (!selectSize) { // Check if size is empty
-        alert("Please choose the size first");
-        return;
+    const username = localStorage.getItem("username");
+
+    if (!selectSize||selectSize=="") {  
+        return { status: 400, data: { message: "Please choose the size first" }, ok: false };
     }
 
-    const prod = {
-        product_id: selectedProduct._id,
-        username: username, // Use it directly
-        name: selectedProduct.name,
-        description: selectedProduct.description,
-        price: selectedProduct.price,
-        category: selectedProduct.category,
-        brand: selectedProduct.brand,
-        size: selectSize, // Ensure this variable is defined
-        color: selectedProduct.color,
-        discount: selectedProduct.discount,
-        stock: quantity, // Ensure this variable is defined
-        images: selectedProduct.images,
-        rating: selectedProduct.rating,
-        reviews: selectedProduct.reviews,
-    };
+    if (!token) {
+        return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+    }
 
     try {
-        const response = await fetch(`https://nord-storm.onrender.com/cartUpdate/${selectedProduct._id}`, {
+        const response = await fetch(`https://nord-storm.onrender.com/products/cartUpdate/${selectedProduct._id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
-              product_id: selectedProduct._id,
-              username: username, // Use it directly
-              name: selectedProduct.name,
-              description: selectedProduct.description,
-              price: selectedProduct.price,
-              category: selectedProduct.category,
-              brand: selectedProduct.brand,
-              size: selectSize, // Ensure this variable is defined
-              color: selectedProduct.color,
-              discount: selectedProduct.discount,
-              stock: quantity, // Ensure this variable is defined
-              images: selectedProduct.images,
-              rating: selectedProduct.rating,
-              reviews: selectedProduct.reviews
+                product_id: selectedProduct?._id,
+                username: username || "Guest",
+                name: selectedProduct?.name || "Unknown",
+                description: selectedProduct?.description || "No description",
+                price: selectedProduct?.price || 0,
+                category: selectedProduct?.category || "Uncategorized",
+                brand: selectedProduct?.brand || "Unknown",
+                size: selectSize,
+                color: selectedProduct?.color || "N/A",
+                discount: selectedProduct?.discount || 0,
+                stock: quantity || 1,
+                images: selectedProduct?.images || [],
+                rating: selectedProduct?.rating || 0,
+                reviews: selectedProduct?.reviews || []
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
         const data = await response.json();
-        console.log("Product updated:", data);
+      
+        setIsModalOpen(false)
+        setSelectedSize("")
+        return { status: response.status, data, ok: response.ok }; // RETURN the response
+        
     } catch (error) {
-        console.error("Error updating product:", error.message);
+        return { status: 500, data: { message: error.message }, ok: false };
     }
 };
+
+
+async function AddToWishlist(){
+  const token = localStorage.getItem("authToken");
+  const username = localStorage.getItem("username");
+
+  if (!selectSize||selectSize=="") {  
+      return { status: 400, data: { message: "Please choose the size first" }, ok: false };
+  }
+
+  if (!token) {
+      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+  }
+
+  try {
+      const response = await fetch(`https://nord-storm.onrender.com/products/wishlistUpdate/${selectedProduct._id}`, {
+          method: "PATCH",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({
+              product_id: selectedProduct?._id,
+              username: username || "Guest",
+              name: selectedProduct?.name || "Unknown",
+              description: selectedProduct?.description || "No description",
+              price: selectedProduct?.price || 0,
+              category: selectedProduct?.category || "Uncategorized",
+              brand: selectedProduct?.brand || "Unknown",
+              size: selectSize,
+              color: selectedProduct?.color || "N/A",
+              discount: selectedProduct?.discount || 0,
+              stock: quantity || 1,
+              images: selectedProduct?.images || [],
+              rating: selectedProduct?.rating || 0,
+              reviews: selectedProduct?.reviews || []
+          })
+      });
+
+      const data = await response.json();
+    
+      setIsModalOpen(false)
+      setSelectedSize("")
+      return { status: response.status, data, ok: response.ok }; // RETURN the response
+      
+  } catch (error) {
+      return { status: 500, data: { message: error.message }, ok: false };
+  }
+}
+
 
   return (
     <Box p={4}>
@@ -378,13 +416,10 @@ function DisplayProduct({ products }) {
             </ModalBody>
 
             <ModalFooter>
-              <Button
-                colorScheme="blue"
-                mr={3}
-                onClick={() => AddProductToCart(selectedProduct)}
-              >
-                ADD TO CART ({quantity})
-              </Button>
+              <Box>
+              <ToastForCart selectedProduct={selectedProduct} quantity={quantity} AddProductToCart={AddProductToCart} selectSize={selectSize}/>
+              <ToastForWishlist selectedProduct={selectedProduct} quantity={quantity} AddProductToWishlist={AddToWishlist} selectSize={selectSize}/>
+              </Box>
             </ModalFooter>
           </ModalContent>
         </Modal>
