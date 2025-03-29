@@ -12,7 +12,13 @@ require("./config/passport");
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(
+    cors({
+      origin: "https://nord-storm.vercel.app", // Allow frontend URL
+      methods: "GET,POST,PUT,DELETE,PATCH",
+      credentials: true, // Allow cookies if needed
+    })
+  );
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

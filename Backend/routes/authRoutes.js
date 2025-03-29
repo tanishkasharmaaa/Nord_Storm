@@ -16,33 +16,33 @@ router.get(
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
     if (!req.user) {
-      return res.redirect("http://localhost:5173/login?error=Unauthorized");
+      return res.redirect("https://nord-storm.vercel.app/login?error=Unauthorized");
     }
 
-    // Generate JWT Token (Include user ID, email, and name)
+    // Generate JWT Token
     const token = jwt.sign(
       { id: req.user._id, email: req.user.email, name: req.user.name },
       process.env.JWT_SECRET,
       { expiresIn: "2d" }
     );
 
-    // Redirect to frontend with token and encoded name
+    // Redirect to frontend with token
     res.redirect(
-      `http://localhost:5173/?token=${token}&name=${encodeURIComponent(req.user.name)}`
+      `https://nord-storm.vercel.app/?token=${token}&name=${encodeURIComponent(req.user.name)}`
     );
   }
 );
 
-// 🔹 Logout Route (Properly destroys session)
-router.get("/logout", (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
+// 🔹 Logout Route (Express 5 Fix)
+router.get("/logout", async (req, res, next) => {
+  try {
+    await req.logout(); // Works with Express 5
     req.session.destroy(() => {
-      res.redirect("http://localhost:5173");
+      res.redirect("https://nord-storm.vercel.app");
     });
-  });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
