@@ -419,6 +419,7 @@ ProductRouter.delete("/cartDelete/:id",authMiddleware,async(req,res)=>{
 
 // ORDER HISTORY FUNCTIONALITY
 
+
 ProductRouter.post("/order", authMiddleware, async (req, res) => {
   try {
     let token = req.headers.authorization?.split(" ")[1];
@@ -461,16 +462,14 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
     });
 
     const savedOrder = await newOrder.save();
+await cart.deleteMany({username:user.email}) 
 
-    // ✅ Corrected Cart Deletion: Remove items only if order is saved successfully
-    await cart.deleteMany({ username: user.email });
 
     res.status(201).json({ message: "Order placed successfully", order: savedOrder });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
-
 
 
 
