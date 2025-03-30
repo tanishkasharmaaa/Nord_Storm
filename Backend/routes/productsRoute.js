@@ -463,7 +463,7 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
     const savedOrder = await newOrder.save();
 
     // ✅ Corrected Cart Deletion: Remove items only if order is saved successfully
-    await Cart.deleteMany({ username: user.email });
+    await cart.deleteMany({ username: user.email });
 
     res.status(201).json({ message: "Order placed successfully", order: savedOrder });
   } catch (error) {
