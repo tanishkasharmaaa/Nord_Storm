@@ -10,6 +10,7 @@ import WishList from "../Pages/wishlist";
 import SingleProductPage from "../Pages/singleProductPage";
 import ProtectedRoute from "../Routes/protectedRoute";
 import Checkout from "../Pages/checkout";
+import OrderHistory from "../Pages/orderHistory";
 
 function Routing() {
   return (
@@ -31,6 +32,7 @@ function Routing() {
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/wishlist" element={<WishList/>}/>
         <Route path="/checkout" element={<Checkout/>}/>
+        <Route path="/orderHistory" element={<OrderHistory/>}/>
       </Route>
 
       {/* Catch-all for undefined routes */}

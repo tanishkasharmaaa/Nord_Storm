@@ -93,16 +93,16 @@ const CheckoutPage = () => {
             
         });
 
-        // console.log("🟡 Response Status:", response.status);
-        // console.log("🟠 Response Headers:", response.headers);
+        console.log("🟡 Response Status:", response.status);
+        console.log("🟠 Response Headers:", response.headers);
         const data = await response.text(); // Read response as text
-        // console.log("🔴 Response Body:", data);
+        console.log("🔴 Response Body:", data);
 
         if (!response.ok) throw new Error(data || "Order failed");
 
         alert("Order placed successfully!");
         setCart([]); 
-        navigate("/orders");
+        navigate("/orderHistory");
     } catch (error) {
         console.error("Order error:", error);
     }
