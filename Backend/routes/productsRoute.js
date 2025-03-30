@@ -226,7 +226,10 @@ ProductRouter.get("/cart", authMiddleware, async (req, res) => {
           }
           return res.status(400).json({ message: "Invalid token", error });
       }
-
+      const cartItem = await cart.find()
+      if(cartItem.length==0){
+       return res.status(200).json({message:"No Product found"})
+      }
       const displayCartItems = await cart.find({ username: username });
       if (displayCartItems.length === 0) {
           return res.status(200).json({ message: "No Product found" });
