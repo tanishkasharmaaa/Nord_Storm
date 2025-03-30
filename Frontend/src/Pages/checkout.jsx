@@ -84,7 +84,7 @@ const CheckoutPage = () => {
             body: JSON.stringify({
               items: cart.map((item) => ({
                 ...item,
-                quantity: item.stock || 1,  // Ensure quantity is included
+                quantity: item.stock,  // Ensure quantity is included
               })),
               totalAmount,
               paymentMethod,
@@ -105,7 +105,6 @@ const CheckoutPage = () => {
         navigate("/orders");
     } catch (error) {
         console.error("Order error:", error);
-        alert("Error placing order");
     }
 };
 
