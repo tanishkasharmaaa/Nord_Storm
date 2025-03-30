@@ -421,8 +421,9 @@ ProductRouter.delete("/cartDelete/:id",authMiddleware,async(req,res)=>{
 ProductRouter.post("/order", authMiddleware, async (req, res) => {
   try {
     let token = req.headers.authorization?.split(" ")[1];
+
     if (!token) {
-      return res.redirect(`https://nord-storm.onrender.com/auth/google`);
+      return res.status(401).json({ message: "Unauthorized, please login again" });
     }
 
     let username;
@@ -431,20 +432,20 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
       username = decoded.email;
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        return res.redirect(`https://nord-storm.onrender.com/auth/google`);
+        return res.status(401).json({ message: "Session expired, please login again" });
       }
       return res.status(400).json({ message: "Invalid token", error: error.message });
     }
 
     const { items, totalAmount, paymentMethod, address } = req.body;
 
-    if (!items || items.length === 0) {
-      return res.status(400).json({ message: "Cart is empty" });
+    if (!items || items.length === 0 || !totalAmount || !address) {
+      return res.status(400).json({ message: "Incomplete order details" });
     }
 
     // Create new order
     const newOrder = new Order({
-      user: username, 
+      user: username, // Store email, or use ObjectId if referencing User model
       items,
       totalAmount,
       paymentMethod,

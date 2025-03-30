@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
     "https://nord-storm.vercel.app",
     "https://another-allowed-site.com",
-    "http://localhost:5173", // For development
+    "http://localhost:5173",
   ];
 
 app.use(
@@ -28,7 +28,7 @@ app.use(
             }
           },
       methods: "GET,POST,PUT,DELETE,PATCH",
-      credentials: true, // Allow cookies if needed
+      credentials: true, 
     })
   );
 app.use(express.json());
