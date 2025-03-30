@@ -20,14 +20,7 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            console.log(`Blocked CORS request from: ${origin}`);
-            callback(null, false);
-        }
-    },
+    origin: "*", 
     methods: "GET,POST,PUT,DELETE,PATCH",
     credentials: true,
 }));
