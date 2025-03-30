@@ -8,7 +8,7 @@ const OrderHistory = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("https://your-api.com/allOrders", {
+        const response = await axios.get("https://nord-storm.onrender.com/products/allOrders", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOrders(response.data);
@@ -22,7 +22,7 @@ const OrderHistory = () => {
 
   const cancelOrder = async (orderId) => {
     try {
-      const response = await axios.delete(`https://your-api.com/orderDelete/${orderId}`, {
+      const response = await axios.delete(`https://nord-storm.onrender.com/products/orderDelete/${orderId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
