@@ -67,7 +67,7 @@ const CheckoutPage = () => {
         const token = localStorage.getItem("authToken");
         if (!token) return navigate("https://nord-storm.onrender.com/auth/google");
 
-        console.log("🔵 Sending request to backend...");
+        // console.log("🔵 Sending request to backend...");
         console.log("📌 Request Body:", {
             items: cart,
             totalAmount,
@@ -93,10 +93,10 @@ const CheckoutPage = () => {
             
         });
 
-        console.log("🟡 Response Status:", response.status);
-        console.log("🟠 Response Headers:", response.headers);
-        const data = await response.text(); // Read response as text
-        console.log("🔴 Response Body:", data);
+        // console.log("🟡 Response Status:", response.status);
+        // console.log("🟠 Response Headers:", response.headers);
+        // const data = await response.text(); // Read response as text
+        // console.log("🔴 Response Body:", data);
 
         if (!response.ok) throw new Error(data || "Order failed");
 
