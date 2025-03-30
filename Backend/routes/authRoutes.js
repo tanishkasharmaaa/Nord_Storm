@@ -34,15 +34,19 @@ router.get(
 );
 
 // 🔹 Logout Route (Express 5 Fix)
-router.get("/logout", async (req, res, next) => {
-  try {
-    await req.logout(); // Works with Express 5
-    req.session.destroy(() => {
+router.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+
+    req.session.destroy((sessionErr) => {
+      if (sessionErr) {
+        return next(sessionErr);
+      }
       res.redirect("https://nord-storm.vercel.app");
     });
-  } catch (err) {
-    next(err);
-  }
+  });
 });
 
 module.exports = router;

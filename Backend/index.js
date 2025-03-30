@@ -6,7 +6,7 @@ const session = require("express-session");
 const passport = require("passport");
 const authRoutes = require("./routes/authRoutes");
 const ProductRouter = require("./routes/productsRoute");
-const connection = require("./config/db"); // ✅ Ensure correct import
+const connection = require("./config/db");
 require("./config/passport");
 
 const app = express();
@@ -15,30 +15,38 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
     "https://nord-storm.vercel.app",
     "https://another-allowed-site.com",
+    "https://nord-storm.onrender.com",
     "http://localhost:5173",
-  ];
+];
 
 app.use(
     cors({
         origin: function (origin, callback) {
             if (!origin || allowedOrigins.includes(origin)) {
-              callback(null, true); // Allow request
+                callback(null, true);
             } else {
-              callback(new Error("Not allowed by CORS")); // Block request
+                console.log(`Blocked CORS request from: ${origin}`);
+                callback(null, false);
             }
-          },
-      methods: "GET,POST,PUT,DELETE,PATCH",
-      credentials: true, 
+        },
+        methods: "GET,POST,PUT,DELETE,PATCH",
+        credentials: true,
     })
-  );
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(
     session({
-        secret: process.env.JWT_SECRET,
+        secret: process.env.JWT_SECRET || "fallback_secret",
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: false,
+        cookie: {
+            secure: process.env.NODE_ENV === "production",
+            httpOnly: true,
+            sameSite: "Lax",
+        },
     })
 );
 
@@ -52,7 +60,12 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/products", ProductRouter);
 
-// ✅ Correct async DB connection handling
+// Handle 404
+app.use((req, res, next) => {
+    res.status(404).json({ message: "Route not found" });
+});
+
+// Connect to Database
 connection
     .then(() => {
         console.log("Connected to MongoDB");

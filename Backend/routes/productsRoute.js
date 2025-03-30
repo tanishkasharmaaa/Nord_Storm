@@ -418,6 +418,7 @@ ProductRouter.delete("/cartDelete/:id",authMiddleware,async(req,res)=>{
 
 // ORDER HISTORY FUNCTIONALITY
 
+
 ProductRouter.post("/order", authMiddleware, async (req, res) => {
   try {
     let token = req.headers.authorization?.split(" ")[1];
@@ -426,10 +427,14 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
       return res.status(401).json({ message: "Unauthorized, please login again" });
     }
 
-    let username;
+    let user;
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      username = decoded.email;
+      user = await User.findOne({ email: decoded.email }).select("_id email");
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
     } catch (error) {
       if (error.name === "TokenExpiredError") {
         return res.status(401).json({ message: "Session expired, please login again" });
@@ -443,9 +448,10 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Incomplete order details" });
     }
 
-    // Create new order
+    // Create new order with correct user reference
     const newOrder = new Order({
-      user: username, // Store email, or use ObjectId if referencing User model
+      user: user._id, // Store ObjectId
+      username: user.email, // Store email separately
       items,
       totalAmount,
       paymentMethod,
@@ -461,6 +467,9 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
+module.exports = ProductRouter;
+
 
 // ✅ 2. Get All Orders for Logged-in User
 
@@ -485,8 +494,10 @@ ProductRouter.get("/allOrders",authMiddleware,async(req,res)=>{
     const orders = await Order.find({username:username}).sort({createdAt:-1});
     res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({message:"Server error",error:error.message})
-  }
+    console.error("Order placement error:", error); // Debugging
+    res.status(500).json({ message: "Server error", error: error.message });
+ }
+ 
 })
 
 // ✅ 3. Get a Single Order by ID (User's Own Order)
