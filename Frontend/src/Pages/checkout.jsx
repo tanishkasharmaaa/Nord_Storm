@@ -64,37 +64,47 @@ const CheckoutPage = () => {
 
   const placeOrder = async () => {
     try {
-      const token = localStorage.getItem("authToken");
-      if (!token) return navigate("https://nord-storm.onrender.com/auth/google");
+        const token = localStorage.getItem("authToken");
+        if (!token) return navigate("/login");
 
-      const response = await fetch(
-        "https://nord-storm.onrender.com/products/order",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
+        console.log("🔵 Sending request to backend...");
+        console.log("📌 Request Body:", {
             items: cart,
             totalAmount,
             paymentMethod,
             address,
-          }),
-        }
-      );
+        });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Order failed");
+        const response = await fetch("https://nord-storm.onrender.com/products/order", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                items: cart,
+                totalAmount,
+                paymentMethod,
+                address,
+            }),
+        });
 
-      alert("Order placed successfully!");
-      setCart([]); // Clear local cart state
-      navigate("/orders");
+        console.log("🟡 Response Status:", response.status);
+        console.log("🟠 Response Headers:", response.headers);
+        const data = await response.text(); // Read response as text
+        console.log("🔴 Response Body:", data);
+
+        if (!response.ok) throw new Error(data || "Order failed");
+
+        alert("Order placed successfully!");
+        setCart([]); 
+        navigate("/orders");
     } catch (error) {
-      console.error("Order error:", error);
-      alert("Error placing order");
+        console.error("Order error:", error);
+        alert("Error placing order");
     }
-  };
+};
+
 
   useEffect(() => {
     fetchCart();
