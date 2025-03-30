@@ -68,7 +68,7 @@ const CheckoutPage = () => {
       if (!token) return navigate("https://nord-storm.onrender.com/auth/google");
 
       const response = await fetch(
-        "http://localhost:3000/products/order",
+        "https://nord-storm.onrender.com/products/order",
         {
           method: "POST",
           headers: {
