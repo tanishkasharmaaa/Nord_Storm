@@ -82,11 +82,15 @@ const CheckoutPage = () => {
                 Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-                items: cart,
-                totalAmount,
-                paymentMethod,
-                address,
+              items: cart.map((item) => ({
+                ...item,
+                quantity: item.stock || 1,  // Ensure quantity is included
+              })),
+              totalAmount,
+              paymentMethod,
+              address,
             }),
+            
         });
 
         console.log("🟡 Response Status:", response.status);
