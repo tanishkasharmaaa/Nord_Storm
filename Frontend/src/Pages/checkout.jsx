@@ -65,7 +65,7 @@ const CheckoutPage = () => {
   const placeOrder = async () => {
     try {
         const token = localStorage.getItem("authToken");
-        if (!token) return navigate("/login");
+        if (!token) return navigate("https://nord-storm.onrender.com/auth/google");
 
         console.log("🔵 Sending request to backend...");
         console.log("📌 Request Body:", {
@@ -150,7 +150,7 @@ const CheckoutPage = () => {
           <option value="UPI">UPI</option>
         </Select>
 
-        <Button colorScheme="blue" mt={5} width="full" onClick={()=>placeOrder()}>
+        <Button colorScheme="blue" mt={5} width="full" onClick={placeOrder()}>
           Place Order
         </Button>
       </Box>
