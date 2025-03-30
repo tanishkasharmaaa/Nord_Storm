@@ -68,9 +68,9 @@ function Cart() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+    
       let data = await response.json();
-      setCartItems(data.displayCartItems);
+      setCartItems(data.displayCartItems||[]);
     } catch (error) {
       console.log("Error fetching cart data:", error.message);
     }
@@ -147,7 +147,8 @@ function Cart() {
   const selectedProduct = cartItems.find((p) => p._id === dialogId);
 
   const calculateTotalPrice = () => {
-    return cartItems.reduce((acc, product) =>acc+product.price *product.stock, 0)*0.9;
+    return cartItems.reduce((acc, product) => acc + product.price * (product.stock || 1), 0) * 0.9;
+
     
   };
   
@@ -160,7 +161,7 @@ function Cart() {
         <Box maxH={'500px'} zIndex={'auto'} flex={isLargerThan768 ? 2 : 1} mr={isLargerThan768 ? 6 : 0}>
         <Box maxH="500px" overflowY="auto" zIndex="auto" flex={isLargerThan768 ? 2 : 1} mr={isLargerThan768 ? 6 : 0}>
   <Grid templateColumns={isLargerThan1024 ? "repeat(2, 1fr)" : "repeat(2, 1fr)"} gap={6}>
-    {cartItems.map((cartProd, index) => (
+    {cartItems.length>0?(cartItems.map((cartProd, index) => (
       <Box key={index} borderWidth={1} borderRadius="lg" p={4}>
         <Flex direction={isLargerThan768 ? 'row' : 'column'} align="center">
           <Box>
@@ -185,7 +186,9 @@ function Cart() {
           </Box>
         </Flex>
       </Box>
-    ))}
+    ))):(<>
+    <Text>No Product found</Text>
+    </>)}
   </Grid>
 </Box>
 
@@ -195,9 +198,9 @@ function Cart() {
           <Box borderWidth={1} p={4} borderRadius="lg" bgColor="white">
             <Text fontSize="lg" fontWeight="bold">Order Summary</Text>
             <Box mt={4}>
-              <Text>Total Price: ${cartItems.reduce((acc,curr)=>acc+curr.price*curr.stock,0)}</Text>
+              <Text>Total Price: ${cartItems.length>0?(cartItems.reduce((acc,curr)=>acc+curr.price*curr.stock,0)):null}</Text>
               <Text>Discount: 10% off</Text>
-              <Text>Quantity: {cartItems.length}</Text>
+              <Text>Quantity: {cartItems.length>0?(cartItems.length):null}</Text>
               <Text fontWeight="bold" mt={2}>
                 Final Price: ${Math.floor(calculateTotalPrice())}
               </Text>
