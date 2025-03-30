@@ -469,7 +469,7 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
   }
 });
 
-module.exports = ProductRouter;
+
 
 
 // ✅ 2. Get All Orders for Logged-in User
