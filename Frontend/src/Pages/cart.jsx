@@ -147,11 +147,10 @@ function Cart() {
   const selectedProduct = cartItems.find((p) => p._id === dialogId);
 
   const calculateTotalPrice = () => {
-    return cartItems.reduce((acc, product) => {
-      const discountedPrice = product.price * (1 - product.discount / 100);
-      return acc + discountedPrice;
-    }, 0);
+    return cartItems.reduce((acc, product) =>acc+product.price *product.stock, 0)*0.9;
+    
   };
+  
 
   return (
     <>
@@ -196,11 +195,11 @@ function Cart() {
           <Box borderWidth={1} p={4} borderRadius="lg" bgColor="white">
             <Text fontSize="lg" fontWeight="bold">Order Summary</Text>
             <Box mt={4}>
-              <Text>Total Price: ${calculateTotalPrice().toFixed(2)}</Text>
+              <Text>Total Price: ${cartItems.reduce((acc,curr)=>acc+curr.price*curr.stock,0)}</Text>
               <Text>Discount: 10% off</Text>
               <Text>Quantity: {cartItems.length}</Text>
               <Text fontWeight="bold" mt={2}>
-                Final Price: ${(calculateTotalPrice() * 0.9).toFixed(2)}
+                Final Price: ${Math.floor(calculateTotalPrice())}
               </Text>
               <Button  colorScheme="blue" mt={4} width="full" onClick={()=>navigate("/checkout")}>
                 Checkout
