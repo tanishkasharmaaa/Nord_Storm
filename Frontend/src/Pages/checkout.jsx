@@ -153,7 +153,7 @@ const CheckoutPage = () => {
           <option value="UPI">UPI</option>
         </Select>
 
-        <Button colorScheme="blue" mt={5} width="full" onClick={placeOrder()}>
+        <Button colorScheme="blue" mt={5} width="full" onClick={placeOrder}>
           Place Order
         </Button>
       </Box>
