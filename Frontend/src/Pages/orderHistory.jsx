@@ -1,51 +1,55 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const token = localStorage.getItem("authToken");
-        if (!token) return (window.location.href = "https://nord-storm.onrender.com/auth/google");
-
-        const response = await fetch("https://nord-storm.onrender.com/products/allOrders", {
+        const response = await axios.get("https://your-api.com/allOrders", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        const data = await response.json();
-        if (response.ok) {
-          setOrders(data);
-        } else {
-          alert("Error fetching orders");
-        }
+        setOrders(response.data);
       } catch (error) {
-        console.error("Fetch orders error:", error);
+        console.error("Error fetching orders:", error);
       }
     };
 
     fetchOrders();
   }, []);
 
+  const cancelOrder = async (orderId) => {
+    try {
+      const response = await axios.delete(`https://your-api.com/orderDelete/${orderId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.status === 200) {
+        alert("Order cancelled successfully!");
+        setOrders(orders.filter(order => order._id !== orderId));
+      }
+    } catch (error) {
+      console.error("Error cancelling order:", error);
+      alert(error.response?.data?.message || "Failed to cancel order");
+    }
+  };
+
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="orders-container">
       <h2>Order History</h2>
       {orders.length === 0 ? (
         <p>No orders found.</p>
       ) : (
         orders.map((order) => (
-          <div key={order._id} style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px" }}>
+          <div key={order._id} className="order-card">
             <h3>Order ID: {order._id}</h3>
-            <p>Status: {order.orderStatus}</p>
-            <p>Total Amount: ₹{order.totalAmount}</p>
-            <h4>Items:</h4>
-            <ul>
-              {order.items.map((item, index) => (
-                <li key={index}>
-                  {item.name} - ₹{item.price} x {item.quantity}
-                </li>
-              ))}
-            </ul>
+            <p>Status: <strong>{order.orderStatus}</strong></p>
+            <p>Total: ₹{order.totalAmount}</p>
+            {order.orderStatus === "Processing" && (
+              <button onClick={() => cancelOrder(order._id)}>Cancel Order</button>
+            )}
           </div>
         ))
       )}
