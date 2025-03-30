@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const wishList = require("../model/Wishlist");
 const cart = require("../model/Cart")
 const Order = require("../model/Order")
+const User = require("../model/User")
 require("dotenv").config()
 
 ProductRouter.get("/", async (req, res) => {
