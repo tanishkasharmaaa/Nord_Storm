@@ -463,8 +463,8 @@ ProductRouter.post("/order", authMiddleware, async (req, res) => {
 
     const savedOrder = await newOrder.save();
 
-    const deleteFromCart= await cart.deleteMany({username:username}) 
-    
+    const deleteFromCart= await cart.deleteMany({username:user}) 
+
 
     res.status(201).json({ message: "Order placed successfully", order: savedOrder });
   } catch (error) {
