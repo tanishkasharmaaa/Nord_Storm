@@ -5,8 +5,7 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const token = localStorage.getItem("authToken");
 
-  useEffect(() => {
-    const fetchOrders = async () => {
+const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("authToken"); // Retrieve token
   
@@ -33,10 +32,7 @@ const OrderHistory = () => {
         console.error("Error fetching orders:", error);
       }
     };
-  
-    fetchOrders();
-  }, []); // Empty dependency array to run only on mount
-  
+
 
   const cancelOrder = async (orderId) => {
     try {
@@ -53,6 +49,12 @@ const OrderHistory = () => {
       alert(error.response?.data?.message || "Failed to cancel order");
     }
   };
+
+  
+  useEffect(() => {
+  fetchOrders();
+  }, []); // Empty dependency array to run only on mount
+  
 
   return (
     <div className="orders-container">
