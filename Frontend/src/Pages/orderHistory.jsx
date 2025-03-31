@@ -50,7 +50,7 @@ const fetchOrders = async () => {
     }
   };
 
-  
+
   useEffect(() => {
   fetchOrders();
   }, []); // Empty dependency array to run only on mount
@@ -60,7 +60,7 @@ const fetchOrders = async () => {
     <div className="orders-container">
       <h2>Order History</h2>
       {orders.length === 0 ? (
-        <p>No orders found.</p>
+        <p>No orders found.hgh</p>
       ) : (
         orders.map((order) => (
           <div key={order._id} className="order-card">
