@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {axios} from 'axios'
+import axios from 'axios'
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
