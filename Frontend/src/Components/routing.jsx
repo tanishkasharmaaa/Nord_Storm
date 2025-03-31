@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "../Pages/home";
-import New from "../Pages/new";
 import Men from "../Pages/men";
 import Women from "../Pages/women";
 import Kids from "../Pages/kids";

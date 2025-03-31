@@ -1,4 +1,4 @@
-import { Flex, Input, Box, Text, Image } from "@chakra-ui/react";
+import { Flex, Input, Box, Text, Image,useMediaQuery } from "@chakra-ui/react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,9 @@ function ProductSearch() {
   const suggestionRefs = useRef([]);
   const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isMobile] = useMediaQuery("(min-width: 767px)");
+  const [isTablet] = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const [isDesktop] = useMediaQuery("(min-width: 1024px)");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,14 +90,25 @@ function ProductSearch() {
   return (
     <Flex position="relative" ref={searchRef}>
       <Input
-        placeholder="Search products..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => {
-          handleKeyDown(e);
-          handleArrowKeyDown(e);
-        }}
-      />
+  placeholder="Search By products & brands..."
+  value={query}
+  onChange={(e) => setQuery(e.target.value)}
+  onKeyDown={(e) => {
+    handleKeyDown(e);
+    handleArrowKeyDown(e);
+  }}
+  size="lg"
+  borderRadius="full"
+  fontSize="md"
+  width={["90%", "500px", "800px"]} // Mobile: 90%, Tablet: 500px, Desktop: 800px
+  maxWidth="1000px" // Prevents excessive stretching on ultra-wide screens
+  mx="auto"
+  paddingLeft="6"
+  height="50px"
+/>
+
+
+
       {showSuggestions && results.length > 0 && (
         <Box
           position="absolute"
