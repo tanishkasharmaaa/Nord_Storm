@@ -15,18 +15,22 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  Select
+  Select,
+  useToast
 } from "@chakra-ui/react";
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { useMediaQuery } from "@chakra-ui/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from "react-router-dom";
 
 const ProductCarousel = ({ category }) => {
+  const toast = useToast()
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity,setQuantity]=useState(1)
+  const [selectSize,setSelectSize] = useState("")
   let sliderRef = null;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -36,8 +40,7 @@ const ProductCarousel = ({ category }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(
-        `https://nord-storm.onrender.com/products?category=${category}`
+      const response = await fetch(category==""?(`https://nord-storm.onrender.com/products`):(`https://nord-storm.onrender.com/products?category=${category}`)
       );
       const data = await response.json();
       setProducts(data.products);
@@ -47,6 +50,180 @@ const ProductCarousel = ({ category }) => {
       setLoading(false);
     }
   };
+
+  async function addToCart() {
+    const token = localStorage.getItem("authToken");
+    const username = localStorage.getItem("username");
+
+  
+    if (!token) {
+      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+    }
+    if (!selectSize || selectSize.trim() === "") {  
+      toast({
+        title: "Size Required",
+        description: "Please select a size before adding to cart.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;  // ⛔ STOP EXECUTION if no size is selected
+    }
+    try {
+      const response = await fetch(
+        `https://nord-storm.onrender.com/products/cartUpdate/${selectedProduct._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            product_id: selectedProduct._id,
+            username: username || "Guest",
+            name: selectedProduct.name || "Unknown",
+            description: selectedProduct.description || "No description",
+            price: selectedProduct.price || 0,
+            category: selectedProduct.category || "Uncategorized",
+            brand: selectedProduct.brand || "Unknown",
+            size: selectSize,
+            color: selectedProduct.color || "N/A",
+            discount: selectedProduct.discount || 0,
+            stock: quantity || 1,
+            images: selectedProduct.images || [],
+            rating: selectedProduct.rating || 0,
+            reviews: selectedProduct.reviews || [],
+          }),
+        }
+      );
+      
+      const data = await response.json();
+
+      if (response?.status === 200) {
+        toast({
+          title: "Product Added",
+          description: `${selectedProduct.name} has been added to your cart.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } 
+      else if (response?.status === 409) {
+        toast({
+          title: "Already in Cart",
+          description: `${selectedProduct.name} is already in your cart.`,
+          status: "info",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } 
+      else {
+        toast({
+          title: "Already Added",
+          description: response?.data?.message || "Something went wrong! Please try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      }
+    
+      return { status: response.status, data, ok: response.ok };
+    } catch (error) {
+      return { status: 500, data: { message: error.message }, ok: false };
+    }
+  }
+
+  async function addToWishlist() {
+    const token = localStorage.getItem("authToken");
+    const username = localStorage.getItem("username");
+
+  
+    if (!token) {
+      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+    }
+    if (!selectSize || selectSize.trim() === "") {  
+      toast({
+        title: "Size Required",
+        description: "Please select a size before adding to cart.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;  // ⛔ STOP EXECUTION if no size is selected
+    }
+    try {
+      const response = await fetch(
+        `https://nord-storm.onrender.com/products/wishlistUpdate/${selectedProduct._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            product_id:selectedProduct._id,
+            username: username || "Guest",
+            name: selectedProduct.name || "Unknown",
+            description: selectedProduct.description || "No description",
+            price: selectedProduct.price || 0,
+            category: selectedProduct.category || "Uncategorized",
+            brand: selectedProduct.brand || "Unknown",
+            size: selectSize,
+            color: selectedProduct.color || "N/A",
+            discount: selectedProduct.discount || 0,
+            stock: quantity || 1,
+            images: selectedProduct.images || [],
+            rating: selectedProduct.rating || 0,
+            reviews: selectedProduct.reviews || [],
+          }),
+        }
+      );
+      
+      const data = await response.json();
+
+      if (response?.status === 200) {
+        toast({
+          title: "Product Added",
+          description: `${selectedProduct.name} has been added to your wishlist.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } 
+      else if (response?.status === 409) {
+        toast({
+          title: "Already in Wishlist",
+          description: `${selectedProduct.name} is already in your cart.`,
+          status: "info",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } 
+      else {
+        toast({
+          title: "Already Added",
+          description: response?.data?.message || "Something went wrong! Please try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      }
+   
+      return { status: response.status, data, ok: response.ok };
+    } catch (error) {
+      return { status: 500, data: { message: error.message }, ok: false };
+    }
+  }
+
+
 
   useEffect(() => {
     fetchProducts();
@@ -98,8 +275,8 @@ const ProductCarousel = ({ category }) => {
                   borderRadius="md"
                   mx="auto"
                 />
-                <Text fontWeight="bold" mt={2} fontSize={isLargerThan1024 ? "lg" : "md"}>
-                  {product.name}
+                <Text fontWeight="bold" mt={2} fontSize={isLargerThan1024 ? "lg" : "md"} textDecoration={'underline'}>
+                  <Link to={`/product/${product._id}`}>{product.name}</Link>
                 </Text>
                 <Text color="gray.500" fontSize={isLargerThan768 ? "md" : "sm"}>
                   {product.brand}
@@ -166,7 +343,7 @@ const ProductCarousel = ({ category }) => {
                 <Text mt={2} fontSize="md" color="gray.600">
                   {selectedProduct.description}
                 </Text>
-                <Select placeholder="Select Size" mt={3}>
+                <Select placeholder="Select Size" mt={3} onChange={(e)=>setSelectSize(e.target.value)}>
           {selectedProduct.size.map((size, index) => (
             <option key={index} value={size}>
               {size}
@@ -178,9 +355,14 @@ const ProductCarousel = ({ category }) => {
           <Text mx={3} fontSize="lg">{quantity}</Text>
           <Button onClick={() => setQuantity((prev) => prev + 1)} size="sm" colorScheme="green">+</Button>
         </Box>
-                <Button mt={4} colorScheme="blue" w="100%" onClick={onClose}>
-                  Add to Cart ({quantity})
+        
+        <Button colorScheme="blue" w={'100%'} mt={5} onClick={addToCart}>
+      ADD TO CART ({quantity})
+    </Button><br />
+                <Button  bgColor={'white'} color={'blue.500'} w={'100%'}  onClick={addToWishlist}>
+                 + Add to wishlist
                 </Button>
+                
               </Box>
             )}
           </ModalBody>

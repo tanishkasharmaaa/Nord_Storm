@@ -5,7 +5,8 @@ import {
   Box, Button, Flex, Image, Text, useMediaQuery, Modal, ModalBody, ModalContent, ModalHeader,
   ModalCloseButton, ModalFooter, ModalOverlay, Select, Grid
 } from '@chakra-ui/react';
-import {useNavigate } from 'react-router-dom';
+import {Link, useNavigate } from 'react-router-dom';
+import { Footer } from '../Components/footer';
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -168,7 +169,7 @@ function Cart() {
             <Image src={cartProd.images[0]} boxSize="150px" objectFit="cover" />
           </Box>
           <Box ml={isLargerThan768 ? 4 : 0} mt={isLargerThan768 ? 0 : 4}>
-            <Text fontWeight="bold">{cartProd.name}</Text>
+            <Text fontWeight="bold" textDecoration={'underline'}><Link to={`/product/${cartProd.product_id}`}>{cartProd.name}</Link></Text>
             <Text fontStyle="italic">{cartProd.description}</Text>
             <Text mt={2}>
               <b>Color:</b> {cartProd.color}
@@ -264,6 +265,7 @@ function Cart() {
           </ModalContent>
         </Modal>
       )}
+      <Footer/>
     </>
   );
 }

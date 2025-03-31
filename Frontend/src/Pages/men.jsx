@@ -4,6 +4,7 @@ import DisplayProduct from "../Components/displayProduct";
 import Navbar from "../Components/navbar";
 import MainPageElements from "../Components/mainPageEle";
 import SkeletonStr from "../Components/skeleton";
+import { Footer } from "../Components/footer";
 
 function Men() {
   const [menProd, setMenProd] = useState([]);
@@ -37,6 +38,7 @@ function Men() {
         // Show actual products once data is loaded
         <DisplayProduct products={menProd} />
       )}
+      <Footer/>
     </>
   );
 }

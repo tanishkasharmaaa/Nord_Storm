@@ -120,6 +120,13 @@ const Navbar = () => {
             >
               WishList
             </Button>
+            <Button
+              bg="transparent"
+              _hover={{ color: "blue.500", textDecoration: "underline" }}
+              onClick={() => navigate("/orderHistory")}
+            >
+              Order History
+            </Button>
 
             {checkLogin && (
               <Button colorScheme="blue" onClick={handleLogout}>
@@ -162,6 +169,13 @@ const Navbar = () => {
               onClick={() => navigate("/wishlist")}
             >
               WishList
+            </Button>
+            <Button
+            w="full"
+             
+              onClick={() => navigate("/orderHistory")}
+            >
+              Order history
             </Button>
               {checkLogin ? (
                 <Button colorScheme="red" onClick={handleLogout} w="full">

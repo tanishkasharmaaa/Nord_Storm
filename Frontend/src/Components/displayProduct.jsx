@@ -25,11 +25,12 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Select
+  Select,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import ToastForCart from '../Components/toastForCart'
+import ToastForCart from "../Components/toastForCart";
 import ToastForWishlist from "../Components/toastForWishlist";
+import { Footer } from "./footer";
 
 function DisplayProduct({ products }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +41,7 @@ function DisplayProduct({ products }) {
   const [dialogId, setDialogId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [selectSize,setSelectedSize] =useState("")
+  const [selectSize, setSelectedSize] = useState("");
 
   const handleDialog = (id) => {
     setDialogId(id);
@@ -74,99 +75,101 @@ function DisplayProduct({ products }) {
     const token = localStorage.getItem("authToken");
     const username = localStorage.getItem("username");
 
-    if (!selectSize||selectSize=="") {  
-        return { status: 400, data: { message: "Please choose the size first" }, ok: false };
+    if (!selectSize || selectSize === "") {
+      return { status: 400, data: { message: "Please choose the size first" }, ok: false };
     }
 
     if (!token) {
-        return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
     }
 
     try {
-        const response = await fetch(`https://nord-storm.onrender.com/products/cartUpdate/${selectedProduct._id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                product_id: selectedProduct?._id,
-                username: username || "Guest",
-                name: selectedProduct?.name || "Unknown",
-                description: selectedProduct?.description || "No description",
-                price: selectedProduct?.price || 0,
-                category: selectedProduct?.category || "Uncategorized",
-                brand: selectedProduct?.brand || "Unknown",
-                size: selectSize,
-                color: selectedProduct?.color || "N/A",
-                discount: selectedProduct?.discount || 0,
-                stock: quantity || 1,
-                images: selectedProduct?.images || [],
-                rating: selectedProduct?.rating || 0,
-                reviews: selectedProduct?.reviews || []
-            })
-        });
-
-        const data = await response.json();
-      
-        setIsModalOpen(false)
-        setSelectedSize("")
-        return { status: response.status, data, ok: response.ok }; // RETURN the response
-        
-    } catch (error) {
-        return { status: 500, data: { message: error.message }, ok: false };
-    }
-};
-
-
-async function AddToWishlist(){
-  const token = localStorage.getItem("authToken");
-  const username = localStorage.getItem("username");
-
-  if (!selectSize||selectSize=="") {  
-      return { status: 400, data: { message: "Please choose the size first" }, ok: false };
-  }
-
-  if (!token) {
-      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
-  }
-
-  try {
-      const response = await fetch(`https://nord-storm.onrender.com/products/wishlistUpdate/${selectedProduct._id}`, {
+      const response = await fetch(
+        `https://nord-storm.onrender.com/products/cartUpdate/${selectedProduct._id}`,
+        {
           method: "PATCH",
           headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-              product_id: selectedProduct?._id,
-              username: username || "Guest",
-              name: selectedProduct?.name || "Unknown",
-              description: selectedProduct?.description || "No description",
-              price: selectedProduct?.price || 0,
-              category: selectedProduct?.category || "Uncategorized",
-              brand: selectedProduct?.brand || "Unknown",
-              size: selectSize,
-              color: selectedProduct?.color || "N/A",
-              discount: selectedProduct?.discount || 0,
-              stock: quantity || 1,
-              images: selectedProduct?.images || [],
-              rating: selectedProduct?.rating || 0,
-              reviews: selectedProduct?.reviews || []
-          })
-      });
+            product_id: selectedProduct?._id,
+            username: username || "Guest",
+            name: selectedProduct?.name || "Unknown",
+            description: selectedProduct?.description || "No description",
+            price: selectedProduct?.price || 0,
+            category: selectedProduct?.category || "Uncategorized",
+            brand: selectedProduct?.brand || "Unknown",
+            size: selectSize,
+            color: selectedProduct?.color || "N/A",
+            discount: selectedProduct?.discount || 0,
+            stock: quantity || 1,
+            images: selectedProduct?.images || [],
+            rating: selectedProduct?.rating || 0,
+            reviews: selectedProduct?.reviews || [],
+          }),
+        }
+      );
 
       const data = await response.json();
-    
-      setIsModalOpen(false)
-      setSelectedSize("")
-      return { status: response.status, data, ok: response.ok }; // RETURN the response
-      
-  } catch (error) {
-      return { status: 500, data: { message: error.message }, ok: false };
-  }
-}
 
+      setIsModalOpen(false);
+      setSelectedSize("");
+      return { status: response.status, data, ok: response.ok };
+    } catch (error) {
+      return { status: 500, data: { message: error.message }, ok: false };
+    }
+  };
+
+  async function AddToWishlist() {
+    const token = localStorage.getItem("authToken");
+    const username = localStorage.getItem("username");
+
+    if (!selectSize || selectSize === "") {
+      return { status: 400, data: { message: "Please choose the size first" }, ok: false };
+    }
+
+    if (!token) {
+      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+    }
+
+    try {
+      const response = await fetch(
+        `https://nord-storm.onrender.com/products/wishlistUpdate/${selectedProduct._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            product_id: selectedProduct?._id,
+            username: username || "Guest",
+            name: selectedProduct?.name || "Unknown",
+            description: selectedProduct?.description || "No description",
+            price: selectedProduct?.price || 0,
+            category: selectedProduct?.category || "Uncategorized",
+            brand: selectedProduct?.brand || "Unknown",
+            size: selectSize,
+            color: selectedProduct?.color || "N/A",
+            discount: selectedProduct?.discount || 0,
+            stock: quantity || 1,
+            images: selectedProduct?.images || [],
+            rating: selectedProduct?.rating || 0,
+            reviews: selectedProduct?.reviews || [],
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      setIsModalOpen(false);
+      setSelectedSize("");
+      return { status: response.status, data, ok: response.ok };
+    } catch (error) {
+      return { status: 500, data: { message: error.message }, ok: false };
+    }
+  }
 
   return (
     <Box p={4}>
@@ -202,13 +205,7 @@ async function AddToWishlist(){
 
               <Box>
                 <b>Minimum Discount:</b>
-                <Slider
-                  min={0}
-                  max={50}
-                  step={5}
-                  value={discount}
-                  onChange={setDiscount}
-                >
+                <Slider min={0} max={50} step={5} value={discount} onChange={setDiscount}>
                   <SliderTrack>
                     <SliderFilledTrack />
                   </SliderTrack>
@@ -219,13 +216,7 @@ async function AddToWishlist(){
 
               <Box>
                 <b>Max Price:</b>
-                <Slider
-                  min={0}
-                  max={10000}
-                  step={500}
-                  value={price}
-                  onChange={setPrice}
-                >
+                <Slider min={0} max={10000} step={500} value={price} onChange={setPrice}>
                   <SliderTrack>
                     <SliderFilledTrack />
                   </SliderTrack>
@@ -271,21 +262,9 @@ async function AddToWishlist(){
       >
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
-            <Box
-              key={product._id}
-              p={4}
-              borderWidth="1px"
-              borderRadius="md"
-              overflow="hidden"
-              boxShadow="sm"
-            >
+            <Box key={product._id} p={4} borderWidth="1px" borderRadius="md" overflow="hidden" boxShadow="sm">
               <Box display="flex" justifyContent="center">
-                <Image
-                  boxSize="230px"
-                  objectFit="cover"
-                  src={product.images[0]}
-                  alt={product.name}
-                />
+                <Image boxSize="230px" objectFit="cover" src={product.images[0]} alt={product.name} />
               </Box>
               <Box>
                 <Button
@@ -313,20 +292,14 @@ async function AddToWishlist(){
                 </Link>
                 <Text color={"grey"}>{product.brand}</Text>
                 <Text color="red" fontWeight="bold">
-                  ${product.price}{" "}
-                  <Text
-                    as="span"
-                    color="gray.500"
-                  >{`${product.discount}% off`}</Text>
+                  ${product.price} <Text as="span" color="gray.500">{`${product.discount}% off`}</Text>
                 </Text>
                 <Box className="rating">
                   {Array.from({ length: 5 }, (_, i) => (
                     <Text
                       key={i}
                       as="span"
-                      color={
-                        i < Math.floor(product.rating) ? "blue.500" : "gray.300"
-                      }
+                      color={i < Math.floor(product.rating) ? "blue.500" : "gray.300"}
                     >
                       ★
                     </Text>
@@ -336,18 +309,12 @@ async function AddToWishlist(){
             </Box>
           ))
         ) : (
-          <Text
-            gridColumn="span 4"
-            textAlign="center"
-            fontSize="24px"
-            color="red"
-          >
+          <Text gridColumn="span 4" textAlign="center" fontSize="24px" color="red">
             No Products Found
           </Text>
         )}
       </Grid>
 
-      {/* Modal for Product Details */}
       {selectedProduct && (
         <Modal isOpen={isModalOpen} onClose={closeModal} size="lg">
           <ModalOverlay />
@@ -355,12 +322,7 @@ async function AddToWishlist(){
             <ModalHeader>{selectedProduct.name}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Image
-                src={selectedProduct.images[0]}
-                alt={selectedProduct.name}
-                boxSize="300px"
-                mx="auto"
-              />
+              <Image src={selectedProduct.images[0]} alt={selectedProduct.name} boxSize="300px" mx="auto" />
               <Text mt={4}>
                 <b>Brand:</b> {selectedProduct.brand}
               </Text>
@@ -368,10 +330,7 @@ async function AddToWishlist(){
                 <b>Price:</b> ${selectedProduct.price}
               </Text>
               <Text>
-                <b>Discount:</b>{" "}
-                <span style={{ color: "red" }}>
-                  {selectedProduct.discount}% off
-                </span>
+                <b>Discount:</b> <span style={{ color: "red" }}>{selectedProduct.discount}% off</span>
               </Text>
               <Text>
                 <b>Color:</b> {selectedProduct.color}
@@ -380,7 +339,7 @@ async function AddToWishlist(){
                 <b>Description:</b> {selectedProduct.description}
               </Text>
 
-              <Select  placeholder="Select Size" mt={3} onChange={(e) => setSelectedSize(e.target.value)} required>
+              <Select placeholder="Select Size" mt={3} onChange={(e) => setSelectedSize(e.target.value)} required>
                 {selectedProduct.size.map((size, index) => (
                   <option key={index} value={size}>
                     {size}
@@ -388,28 +347,14 @@ async function AddToWishlist(){
                 ))}
               </Select>
 
-              {/* Quantity Selector */}
-              <Box
-                mt={4}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Button
-                  onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
-                  size="sm"
-                  colorScheme="red"
-                >
+              <Box mt={4} display="flex" alignItems="center" justifyContent="center">
+                <Button onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))} size="sm" colorScheme="red">
                   -
                 </Button>
                 <Text mx={3} fontSize="lg">
                   {quantity}
                 </Text>
-                <Button
-                  onClick={() => setQuantity((prev) => prev + 1)}
-                  size="sm"
-                  colorScheme="green"
-                >
+                <Button onClick={() => setQuantity((prev) => prev + 1)} size="sm" colorScheme="green">
                   +
                 </Button>
               </Box>
@@ -417,13 +362,14 @@ async function AddToWishlist(){
 
             <ModalFooter>
               <Box>
-              <ToastForCart selectedProduct={selectedProduct} quantity={quantity} AddProductToCart={AddProductToCart} selectSize={selectSize}/>
-              <ToastForWishlist selectedProduct={selectedProduct} quantity={quantity} AddProductToWishlist={AddToWishlist} selectSize={selectSize}/>
+                <ToastForCart selectedProduct={selectedProduct} quantity={quantity} AddProductToCart={AddProductToCart} selectSize={selectSize} />
+                <ToastForWishlist selectedProduct={selectedProduct} quantity={quantity} AddProductToWishlist={AddToWishlist} selectSize={selectSize} />
               </Box>
             </ModalFooter>
           </ModalContent>
         </Modal>
       )}
+      
     </Box>
   );
 }

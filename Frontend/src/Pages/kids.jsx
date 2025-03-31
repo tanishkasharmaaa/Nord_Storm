@@ -3,6 +3,7 @@ import MainPageElements from "../Components/mainPageEle";
 import Navbar from "../Components/navbar";
 import SkeletonStr from "../Components/skeleton";
 import DisplayProduct from "../Components/displayProduct";
+import { Footer } from "../Components/footer";
 
 function Kids(){
     const [kidProd, setKidProd] = useState([]);
@@ -37,6 +38,7 @@ function Kids(){
           <DisplayProduct products={kidProd} />
           </>
         )}
+        <Footer/>
       </>
     );
 }

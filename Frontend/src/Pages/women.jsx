@@ -3,6 +3,7 @@ import MainPageElements from "../Components/mainPageEle";
 import SkeletonStr from "../Components/skeleton";
 import Navbar from "../Components/navbar";
 import DisplayProduct from "../Components/displayProduct";
+import { Footer } from "../Components/footer";
 
 function Women (){
     const [womenProd, setWomenProd] = useState([]);
@@ -37,6 +38,7 @@ function Women (){
           <DisplayProduct products={womenProd} />
           </>
         )}
+        <Footer/>
       </>
     );
 }

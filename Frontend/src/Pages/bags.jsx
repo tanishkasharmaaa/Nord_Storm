@@ -3,6 +3,7 @@ import MainPageElements from "../Components/mainPageEle";
 import SkeletonStr from "../Components/skeleton";
 import Navbar from "../Components/navbar";
 import DisplayProduct from "../Components/displayProduct";
+import { Footer } from "../Components/footer";
 
 function Bags(){
     const [bagProd, setBagProd] = useState([]);
@@ -37,6 +38,7 @@ function Bags(){
           <DisplayProduct products={bagProd} />
           </>
         )}
+        <Footer/>
       </>
     );
 }

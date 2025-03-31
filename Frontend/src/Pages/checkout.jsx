@@ -14,6 +14,9 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import MainPageElements from "../Components/mainPageEle";
+import Navbar from "../Components/navbar";
+import { Footer } from "../Components/footer";
 
 const CheckoutPage = () => {
   const [cart, setCart] = useState([]);
@@ -49,7 +52,7 @@ const CheckoutPage = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to fetch cart");
 
-      setCart(data.displayCartItems);
+      setCart(data.displayCartItems||[]);
       const amount = data.displayCartItems.reduce(
         (sum, item) => sum + item.price * (item.stock || 1),
         0
@@ -67,7 +70,6 @@ const CheckoutPage = () => {
         const token = localStorage.getItem("authToken");
         if (!token) return navigate("https://nord-storm.onrender.com/auth/google");
 
-        // console.log("🔵 Sending request to backend...");
         console.log("📌 Request Body:", {
             items: cart,
             totalAmount,
@@ -84,7 +86,7 @@ const CheckoutPage = () => {
             body: JSON.stringify({
               items: cart.map((item) => ({
                 ...item,
-                quantity: item.stock,  // Ensure quantity is included
+                quantity: item.stock,  
               })),
               totalAmount,
               paymentMethod,
@@ -94,14 +96,14 @@ const CheckoutPage = () => {
         });
 
        
-        const data = await response.text(); // Read response as text
+        const data = await response.text(); 
        
 
         if (!response.ok) throw new Error(data || "Order failed");
 
         alert("Order placed successfully!");
         setCart([]); 
-        navigate("/orderHistory");
+        navigate("/");
     } catch (error) {
         console.error("Order error:", error);
     }
@@ -112,7 +114,9 @@ const CheckoutPage = () => {
     fetchCart();
   }, []);
 
-  return (
+  return (<>
+ <MainPageElements/>
+ <Navbar/>
     <Flex direction={{ base: "column", md: "row" }} gap={5} p={5}>
       <Box flex={1} p={5} borderWidth="1px" borderRadius="lg" boxShadow="lg">
         <Heading as="h3" size="xl" textAlign="center" mb={5}>
@@ -178,6 +182,8 @@ const CheckoutPage = () => {
         )}
       </Box>
     </Flex>
+    <Footer/>
+    </>
   );
 };
 

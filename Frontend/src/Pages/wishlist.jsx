@@ -3,10 +3,12 @@ import MainPageEle from '../Components/mainPageEle'
 import Navbar from '../Components/navbar'
 import {
   Box, Button, Flex, Image, Text, useMediaQuery, Modal, ModalBody, ModalContent, ModalHeader,
-  ModalCloseButton, ModalFooter, ModalOverlay, Select
+  ModalCloseButton, ModalFooter, ModalOverlay, Select,Heading,VStack,Center
 } from '@chakra-ui/react'
-import { Link } from 'react-router-dom'
+import { Link,useNavigate } from 'react-router-dom'
 import { Grid } from '@chakra-ui/react'
+import { Footer } from '../Components/footer'
+
 
 function WishList() {
   const [wishlistItems, setwishlistItems] = useState([]);
@@ -16,7 +18,7 @@ function WishList() {
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
-
+const navigate = useNavigate()
   const handleDialog = (id) => {
     setDialogId(id);
     setIsModalOpen(true);
@@ -49,7 +51,7 @@ function WishList() {
       }
 
       let data = await response.json();
-      setwishlistItems(data.displayWishListItems);
+      setwishlistItems(data.displayWishListItems||[]);
     } catch (error) {
       console.log("Error fetching cart data:", error.message);
     }
@@ -152,7 +154,25 @@ function WishList() {
     <>
       <MainPageEle />
       <Navbar />
-      <Grid
+      
+        {wishlistItems.length==0?(<>
+        <Flex display={'block'} justify="center" align="center" p={2}  px={5}>
+          <Heading
+          fontFamily="Poppins, sans-serif"
+          fontSize={["30px", "40px", "50px"]}
+          color="gray.400"
+          textAlign="center"
+          fontStyle={'italic'}
+        >
+          Add Something to wishlist
+        </Heading>
+        
+        </Flex>
+        <Flex justify={'center'}>
+        <Button as={'button'} onClick={()=>navigate('/')}> GO BACK & ADD ITEMS</Button>
+        </Flex>
+        
+        </>):(wishlistItems.map((product) => (<Grid
         templateColumns={
           isLargerThan1024
             ? "repeat(5, 1fr)"
@@ -164,7 +184,6 @@ function WishList() {
         fontSize="15px"
         mt={4}
       >
-        {wishlistItems.map((product) => (
           <Box
             key={product._id}
             p={4}
@@ -202,7 +221,8 @@ function WishList() {
             <Box fontFamily="Arial, sans-serif" pt={4}>
               <Link >
                 <Text fontWeight="bold" textDecoration={"underline"}>
-                  {product.name}
+                  <Link to={`/product/${product.product_id}`}>{product.name}</Link>
+                  
                 </Text>
               </Link>
               <Text color={"grey"}>{product.brand}</Text>
@@ -228,8 +248,8 @@ function WishList() {
               </Box>
             </Box>
           </Box>
-        ))}
-      </Grid>
+        </Grid>)) )}
+      
 
       {/* Modal for Product Details */}
       {selectedProduct && (
@@ -283,6 +303,7 @@ function WishList() {
           </ModalContent>
         </Modal>
       )}
+      <Footer/>
     </>
   );
 }

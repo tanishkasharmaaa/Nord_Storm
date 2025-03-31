@@ -7,17 +7,25 @@ import {
   Box,
   Image,
   Text,
-  Spinner,
   Radio,
   RadioGroup,
   Stack,
   Flex,
   Skeleton,
   SkeletonText,
-  Textarea
+  Textarea,
+  Select,
+  useToast,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
 } from "@chakra-ui/react";
 import { Coins, ShoppingBag, Heart, Gift, DollarSign } from "lucide-react";
 import ProductCarousel from "../Components/productCarousal";
+import ToastForCart from "../Components/toastForCart";
+import { Footer } from "../Components/footer";
 
 function SingleProductPage() {
   const { id } = useParams();
@@ -27,6 +35,9 @@ const [selectedOption, setSelectedOption] = useState("pickup");
 const [quantity, setQuantity] = useState(1);
 const [newReview, setNewReview] = useState("");
 const [reviews, setReviews] = useState([]); 
+const [rating, setRating] = useState(5);
+const [selectSize,setSelectedSize] = useState("")
+const toast = useToast();
 
   function WhiteBagIcon() {
     return <ShoppingBag size={24} color="white" />;
@@ -62,6 +73,7 @@ const [reviews, setReviews] = useState([]);
       const foundProduct = data.products.find((prod) => prod._id === id);
       if (foundProduct) {
         setProduct(foundProduct);
+        setReviews(foundProduct.reviews)
       }
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -70,16 +82,213 @@ const [reviews, setReviews] = useState([]);
     }
   };
 
+
+const addReview = async () => {
+    if (!newReview.trim()) {
+      toast({ title: "Comment cannot be empty", status: "error", duration: 3000 });
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://nord-storm.onrender.com/products/review/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`
+        },
+        body: JSON.stringify({ comment: newReview, rating })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+
+      toast({ title: "Review added successfully!", status: "success", duration: 3000 });
+      setNewReview("");
+      setRating(5);
+      getProduct()
+      // Optionally, refresh reviews list here
+    } catch (error) {
+      toast({ title: error.message || "Something went wrong", status: "error", duration: 3000 });
+    }
+  };
+
+  async function addToCart() {
+    const token = localStorage.getItem("authToken");
+    const username = localStorage.getItem("username");
+
+  
+    if (!token) {
+      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+    }
+    if (!selectSize || selectSize.trim() === "") {  
+      toast({
+        title: "Size Required",
+        description: "Please select a size before adding to cart.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;  // ⛔ STOP EXECUTION if no size is selected
+    }
+    try {
+      const response = await fetch(
+        `https://nord-storm.onrender.com/products/cartUpdate/${product._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            product_id: product._id,
+            username: username || "Guest",
+            name: product.name || "Unknown",
+            description: product.description || "No description",
+            price: product.price || 0,
+            category: product.category || "Uncategorized",
+            brand: product.brand || "Unknown",
+            size: selectSize,
+            color: product.color || "N/A",
+            discount: product.discount || 0,
+            stock: quantity || 1,
+            images: product.images || [],
+            rating: product.rating || 0,
+            reviews: product.reviews || [],
+          }),
+        }
+      );
+      
+      const data = await response.json();
+
+      if (response?.status === 200) {
+        toast({
+          title: "Product Added",
+          description: `${product.name} has been added to your cart.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } 
+      else if (response?.status === 409) {
+        toast({
+          title: "Already in Cart",
+          description: `${product.name} is already in your cart.`,
+          status: "info",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } 
+      else {
+        toast({
+          title: "Already Added",
+          description: response?.data?.message || "Something went wrong! Please try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      }
+      console.log(data)
+      return { status: response.status, data, ok: response.ok };
+    } catch (error) {
+      return { status: 500, data: { message: error.message }, ok: false };
+    }
+  }
+
+  async function addToWishlist() {
+    const token = localStorage.getItem("authToken");
+    const username = localStorage.getItem("username");
+
+  
+    if (!token) {
+      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+    }
+    if (!selectSize || selectSize.trim() === "") {  
+      toast({
+        title: "Size Required",
+        description: "Please select a size before adding to cart.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;  // ⛔ STOP EXECUTION if no size is selected
+    }
+    try {
+      const response = await fetch(
+        `https://nord-storm.onrender.com/products/wishlistUpdate/${product._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            product_id: product._id,
+            username: username || "Guest",
+            name: product.name || "Unknown",
+            description: product.description || "No description",
+            price: product.price || 0,
+            category: product.category || "Uncategorized",
+            brand: product.brand || "Unknown",
+            size: selectSize,
+            color: product.color || "N/A",
+            discount: product.discount || 0,
+            stock: quantity || 1,
+            images: product.images || [],
+            rating: product.rating || 0,
+            reviews: product.reviews || [],
+          }),
+        }
+      );
+      
+      const data = await response.json();
+
+      if (response?.status === 200) {
+        toast({
+          title: "Product Added",
+          description: `${product.name} has been added to your wishlist.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } 
+      else if (response?.status === 409) {
+        toast({
+          title: "Already in Wishlist",
+          description: `${product.name} is already in your cart.`,
+          status: "info",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } 
+      else {
+        toast({
+          title: "Already Added",
+          description: response?.data?.message || "Something went wrong! Please try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      }
+      console.log(data)
+      return { status: response.status, data, ok: response.ok };
+    } catch (error) {
+      return { status: 500, data: { message: error.message }, ok: false };
+    }
+  }
+
   useEffect(() => {
     getProduct();
   }, [id]);
 
-  const addReview = () => {
-    if (newReview.trim()) {
-      setReviews([...reviews, newReview]);
-      setNewReview("");
-    }
-  };
+  
 
   if (loading) {
     return (
@@ -115,7 +324,7 @@ const [reviews, setReviews] = useState([]);
         gap={8}
         flexDirection={{ base: "column", md: "row" }}
       >
-        <Box flex="1">
+        <Box flex="1" justifyContent={'center'}>
           <Image
             src={product.images}
             alt={product.name}
@@ -166,6 +375,7 @@ const [reviews, setReviews] = useState([]);
               padding: "8px",
               borderRadius: "4px",
             }}
+           onChange={(e)=>setSelectedSize(e.target.value)}
           >
             <option value="">Size</option>
             {product.size.map((size, index) => (
@@ -223,6 +433,7 @@ const [reviews, setReviews] = useState([]);
             w={"100%"}
             borderRadius={"md"}
             _hover={{ bg: "blue.600" }}
+            onClick={addToCart}
           >
             <WhiteBagIcon /> Add to cart
           </Button>
@@ -236,6 +447,7 @@ const [reviews, setReviews] = useState([]);
             w="100%"
             borderRadius="md"
             _hover={{ bg: "blue.50" }}
+            onClick={()=>addToWishlist()}
           >
             <EmptyHeartIcon /> Add to wishlist
           </Button>
@@ -263,28 +475,95 @@ const [reviews, setReviews] = useState([]);
           </Flex>
         </Box>
       </Box>
+      <Box >
+  <Text fontSize="3xl" fontWeight="bold" color="blue.700" pl={5} mb={4} letterSpacing="wide">
+    Look for More Products
+  </Text>
+</Box>
+
+<ProductCarousel category={product.category} />
+
       {/* Reviews Section */}
-      <Box p={6} mt={10} borderWidth={1} borderRadius="lg" shadow="md">
-        <Text fontSize="2xl" fontWeight="bold">Customer Reviews</Text>
-        {reviews.length > 0 ? (
-          reviews.map((review, index) => (
-            <Box key={index} p={3} borderBottom="1px solid gray">
-              <Text>{review}</Text>
-            </Box>
-          ))
-        ) : (
-          <Text color="gray.500">No reviews yet. Be the first to review!</Text>
-        )}
-        <Box mt={4}>
-          <Textarea
-            placeholder="Write a review..."
-            value={newReview}
-            onChange={(e) => setNewReview(e.target.value)}
-          />
-          <Button mt={2} colorScheme="blue" onClick={addReview}>Submit Review</Button>
-        </Box>
-        </Box>
-      <ProductCarousel category={product.category} />
+      <Box p={6} mt={10} borderWidth={1} borderRadius="lg" shadow="lg" bg="white">
+      <Text fontSize="2xl" fontWeight="bold" color="blue.600" mb={4}>
+        Customer Reviews
+      </Text>
+
+      {reviews.length > 0 ? (
+        <Accordion allowToggle>
+          {reviews.map((review) => (
+            <AccordionItem key={review._id} border="1px solid">
+              <AccordionButton
+                _expanded={{ bg: "blue.100" }}
+                _hover={{ bg: "blue.50" }}
+                p={4}
+                borderRadius="md"
+              >
+                <Box flex="1" textAlign="left">
+                  <Text fontWeight="bold" color="blue.500">
+                    Customer ID: {review._id}
+                  </Text>
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+
+              <AccordionPanel pb={4} borderBottom="1px solid gray">
+                <Text color="gray.700" mb={2}>{review.comment}</Text>
+                <Box display="flex" gap={1}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <Text
+                      key={i}
+                      as="span"
+                      fontSize="24px"
+                      color={i < Math.floor(review.rating) ? "yellow.400" : "gray.300"}
+                    >
+                      ★
+                    </Text>
+                  ))}
+                </Box>
+              </AccordionPanel>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      ) : (
+        <Text color="gray.500">No reviews yet. Be the first to review!</Text>
+      )}
+
+      {/* Review Input Form */}
+      <Box mt={6} p={4} borderWidth={1} borderRadius="md" bg="white" shadow="md">
+        <Textarea
+          placeholder="Write a review..."
+          value={newReview}
+          onChange={(e) => setNewReview(e.target.value)}
+          size="md"
+          borderColor="gray.300"
+          _focus={{ borderColor: "blue.400" }}
+        />
+        <Select
+          mt={3}
+          value={rating}
+          onChange={(e) => setRating(e.target.value)}
+          borderColor="gray.300"
+          _focus={{ borderColor: "blue.400" }}
+        >
+          {[1, 2, 3, 4, 5].map((num) => (
+            <option key={num} value={num}>
+              {num} Star{num > 1 ? "s" : ""}
+            </option>
+          ))}
+        </Select>
+        <Button
+          mt={3}
+          colorScheme="blue"
+          w="full"
+          _hover={{ bg: "blue.600" }}
+          onClick={addReview}
+        >
+          Submit Review
+        </Button>
+      </Box>
+    </Box>
+    <Footer/>
     </>
   );
 }

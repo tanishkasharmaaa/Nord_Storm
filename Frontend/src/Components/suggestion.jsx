@@ -1,4 +1,5 @@
 import { VStack, Flex, Image, Text } from "@chakra-ui/react";
+import {Link} from 'react-router-dom'
 
 const Suggestions = ({ results, setQuery, setShowSuggestions, isLargerThan768 }) => {
   return (
@@ -17,6 +18,7 @@ const Suggestions = ({ results, setQuery, setShowSuggestions, isLargerThan768 })
       border="1px solid #ccc"
       p={3}
     >
+      
       {results.map((product) => (
         <Flex
           key={product._id}

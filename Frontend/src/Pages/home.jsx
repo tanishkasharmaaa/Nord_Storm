@@ -10,6 +10,7 @@ import first_banner from "../assets/first_banner.png"
 import second_banner from "../assets/second_banner.png"
 import third_banner from "../assets/third_banner.png"
 import sixth_banner from "../assets/sixth_banner.png"
+import {Footer} from "../Components/footer";
 
 function Home() {
   const token = localStorage.getItem("authToken"); // No need for JSON.stringify
@@ -62,7 +63,7 @@ function Home() {
         </Heading>
         <Image src={sixth_banner}/><br />
       <ProductCarousel category={"Kids"}/><br/>
-
+     <Footer/>
     </>
   );
 }
