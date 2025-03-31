@@ -1,24 +1,42 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import {axios} from 'axios'
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("authToken");
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("https://nord-storm.onrender.com/products/allOrders", {
-          headers: { Authorization: `Bearer ${token}` },
+        const token = localStorage.getItem("authToken"); // Retrieve token
+  
+        if (!token) {
+          console.error("No auth token found!");
+          return;
+        }
+  
+        const response = await fetch("https://nord-storm.onrender.com/products/allOrders", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         });
-        setOrders(response.data);
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        setOrders(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
     };
-
+  
     fetchOrders();
-  }, []);
+  }, []); // Empty dependency array to run only on mount
+  
 
   const cancelOrder = async (orderId) => {
     try {

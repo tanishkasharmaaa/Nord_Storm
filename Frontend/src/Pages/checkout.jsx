@@ -93,10 +93,9 @@ const CheckoutPage = () => {
             
         });
 
-        console.log("🟡 Response Status:", response.status);
-        console.log("🟠 Response Headers:", response.headers);
+       
         const data = await response.text(); // Read response as text
-        console.log("🔴 Response Body:", data);
+       
 
         if (!response.ok) throw new Error(data || "Order failed");
 
