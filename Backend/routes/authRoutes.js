@@ -28,7 +28,7 @@ router.get(
 
     // Redirect to frontend with token
     res.redirect(
-      `http://localhost:5173/?token=${token}&name=${encodeURIComponent(req.user.name)}`
+      `https://nord-storm.vercel.app/?token=${token}&name=${encodeURIComponent(req.user.name)}`
     );
   }
 );
