@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, Flex, Link } from "@chakra-ui/react";
 
 function Footer() {
   return (
@@ -8,6 +8,7 @@ function Footer() {
       height="200px"
       py={6}
       display="flex"
+      flexDirection="column"
       justifyContent="center"
       alignItems="center"
       boxShadow="0px -4px 20px rgba(0, 0, 0, 0.5)"
@@ -22,23 +23,44 @@ function Footer() {
         Made By
         <Text
           as="span"
-          mx={3} // Adjusted spacing
+          mx={2} // Adjusted spacing
           role="img"
           fontSize={{ base: "4xl", md: "5xl" }}
           color="#ffcc33" // Golden color for the emoji
         >
           ✨
         </Text>
-        <Text
-          as="span"
-          fontWeight="bold"
-          color="lightblue"
-        >
+        <Text as="span" fontWeight="bold" color="lightblue">
           Tanishka
         </Text>
       </Text>
+
+      {/* Social Links */}
+      <Flex gap={6} mt={4}>
+        <Link
+          href="https://www.linkedin.com/in/tanishka-304953274"
+          isExternal
+          color="white"
+          fontSize="lg"
+          textDecoration="none"
+          _hover={{ textDecoration: "underline", color: "lightblue" }}
+        >
+          LinkedIn
+        </Link>
+
+        <Link
+          href="https://github.com/tanishkasharmaaa"
+          isExternal
+          color="white"
+          fontSize="lg"
+          textDecoration="none"
+          _hover={{ textDecoration: "underline", color: "lightblue" }}
+        >
+          GitHub
+        </Link>
+      </Flex>
     </Box>
   );
 }
 
-export {Footer};
+export { Footer };

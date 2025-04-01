@@ -1,9 +1,10 @@
-import { Box, Flex, Image, useMediaQuery, Text, Link } from "@chakra-ui/react";
+import { Box, Flex, Image, useMediaQuery, Text} from "@chakra-ui/react";
 import NordStorm_logo from "../assets/NordStorm_logo.png";
 import Search from "../Components/search";
 import Suggestions from "../Components/suggestion";
 import { useState, useEffect, useRef } from "react";
 import { User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function MainPageElements() {
   const [query, setQuery] = useState("");
@@ -107,21 +108,23 @@ function MainPageElements() {
   display="flex" 
   alignItems="center" 
   justifyContent="center"
-  minW="150px" // Ensures the logo always has a minimum width
+  minW="150px" 
 >
+  <Link to={'/'}>
 <Image
   src={NordStorm_logo}
   alt="NordStorm Logo"
-  h={["80px", "100px", "120px"]}  // Mobile: 80px, Tablet: 100px, Desktop: 120px
-  w={["180px", "200px", "240px"]}  // Width scales proportionally
+  h={["20px", "100px", "120px"]}  
+  w={["80px", "200px", "240px"]} 
   objectFit="contain"
-  maxH="130px"  // Prevents excessive stretching
-  maxW="260px"  // Keeps proportions balanced
-  minH="70px"  // Prevents shrinking too much
+  maxH="130px"  
+  maxW="260px" 
+  minH="70px"  
   minW="160px"  
-  display="block"  // Ensures it's always visible
-  mx="auto"  // Centers it properly in its container
+  display="block"  
+  mx="auto" 
 />
+</Link>
 
 </Box>
 

@@ -11,6 +11,7 @@ import second_banner from "../assets/second_banner.png"
 import third_banner from "../assets/third_banner.png"
 import sixth_banner from "../assets/sixth_banner.png"
 import {Footer} from "../Components/footer";
+import { Link } from "react-router-dom";
 
 function Home() {
   const token = localStorage.getItem("authToken"); // No need for JSON.stringify
@@ -61,7 +62,8 @@ function Home() {
         >
          For kids fashion
         </Heading>
-        <Image src={sixth_banner}/><br />
+        <Link to={'/kids'}><Image src={sixth_banner}/></Link>
+        <br />
       <ProductCarousel category={"Kids"}/><br/>
      <Footer/>
     </>

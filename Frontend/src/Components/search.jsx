@@ -10,7 +10,7 @@ function ProductSearch() {
   const suggestionRefs = useRef([]);
   const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [isMobile] = useMediaQuery("(min-width: 767px)");
+  const [isMobile] = useMediaQuery("(min-width: 500px)");
   const [isTablet] = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const [isDesktop] = useMediaQuery("(min-width: 1024px)");
 
@@ -98,20 +98,20 @@ function ProductSearch() {
     handleArrowKeyDown(e);
   }}
   size="lg"
-  borderRadius="full"
-  fontSize={["sm", "md", "lg"]}  // Mobile: Small, Tablet: Medium, Desktop: Large
-  width={["90%", "500px", "800px"]}  // Mobile: 90% width, Tablet: 500px, Desktop: 800px
-  maxWidth="1000px"  // Prevents excessive stretching on ultra-wide screens
+  borderRadius="none"
+  fontSize={["sm", "md", "lg"]}  
+  width={["190px", "500px", "800px"]}  
+  maxWidth="1000px"  
   mx="auto"
   paddingLeft="6"
-  height={["40px", "45px", "50px"]}  // Mobile: 40px, Tablet: 45px, Desktop: 50px
+  height={["40px", "45px", "50px"]}  
   bg="white"
   color="black"
   boxShadow="md"
-  _placeholder={{ color: "gray.500" }}  // Styled placeholder
+  _placeholder={{ color: "gray.500" }}  
   _focus={{
-    borderColor: "blue.500", // Adds blue focus border
-    boxShadow: "0 0 10px rgba(0, 0, 255, 0.3)", // Soft blue glow on focus
+    borderColor: "blue.500", 
+    boxShadow: "0 0 10px rgba(0, 0, 255, 0.3)", 
   }}
 />
 
