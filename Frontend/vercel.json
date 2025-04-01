@@ -1,7 +1,7 @@
 {
     "redirects": [
       {
-        "source": "/",
+        "source": "/(.*)",
         "destination": "https://nord-storm-48ssx2t48-tanishkasharmaaas-projects.vercel.app/",  
         "permanent": false
       }
