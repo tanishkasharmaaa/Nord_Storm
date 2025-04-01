@@ -99,7 +99,7 @@ const ProductCarousel = ({ category }) => {
       );
       
       const data = await response.json();
-
+console.log(data)
       if (response?.status === 200) {
         toast({
           title: "Product Added",
@@ -185,7 +185,7 @@ const ProductCarousel = ({ category }) => {
       );
       
       const data = await response.json();
-
+      console.log(data)
       if (response?.status === 200) {
         toast({
           title: "Product Added",
