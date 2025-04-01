@@ -89,8 +89,8 @@ function ProductSearch() {
 
   return (
     <Flex position="relative" ref={searchRef}>
-      <Input
-  placeholder="Search By products & brands..."
+     <Input
+  placeholder="Search by products & brands..."
   value={query}
   onChange={(e) => setQuery(e.target.value)}
   onKeyDown={(e) => {
@@ -99,13 +99,23 @@ function ProductSearch() {
   }}
   size="lg"
   borderRadius="full"
-  fontSize="md"
-  width={["170px", "500px", "800px"]} // Mobile: 90%, Tablet: 500px, Desktop: 800px
-  maxWidth="1000px" // Prevents excessive stretching on ultra-wide screens
+  fontSize={["sm", "md", "lg"]}  // Mobile: Small, Tablet: Medium, Desktop: Large
+  width={["90%", "500px", "800px"]}  // Mobile: 90% width, Tablet: 500px, Desktop: 800px
+  maxWidth="1000px"  // Prevents excessive stretching on ultra-wide screens
   mx="auto"
   paddingLeft="6"
-  height="50px"
+  height={["40px", "45px", "50px"]}  // Mobile: 40px, Tablet: 45px, Desktop: 50px
+  bg="white"
+  color="black"
+  boxShadow="md"
+  _placeholder={{ color: "gray.500" }}  // Styled placeholder
+  _focus={{
+    borderColor: "blue.500", // Adds blue focus border
+    boxShadow: "0 0 10px rgba(0, 0, 255, 0.3)", // Soft blue glow on focus
+  }}
 />
+
+
 
 
 

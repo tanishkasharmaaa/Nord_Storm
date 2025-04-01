@@ -109,16 +109,20 @@ function MainPageElements() {
   justifyContent="center"
   minW="150px" // Ensures the logo always has a minimum width
 >
-  <Image
-    src={NordStorm_logo}
-    alt="NordStorm Logo"
-    h={["80px", "100px", "120px"]} // Mobile: 80px, Tablet: 100px, Desktop: 120px
-    w={["150px", "180px", "200px"]} // Width scales with height
-    objectFit="contain"
-    minH="80px" // Prevents logo from disappearing
-    maxH="150px" // Keeps logo proportional
-    minW="150px" // Prevents logo from shrinking too much
-  />
+<Image
+  src={NordStorm_logo}
+  alt="NordStorm Logo"
+  h={["80px", "100px", "120px"]}  // Mobile: 80px, Tablet: 100px, Desktop: 120px
+  w={["180px", "200px", "240px"]}  // Width scales proportionally
+  objectFit="contain"
+  maxH="130px"  // Prevents excessive stretching
+  maxW="260px"  // Keeps proportions balanced
+  minH="70px"  // Prevents shrinking too much
+  minW="160px"  
+  display="block"  // Ensures it's always visible
+  mx="auto"  // Centers it properly in its container
+/>
+
 </Box>
 
 
