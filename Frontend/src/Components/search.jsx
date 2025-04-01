@@ -100,7 +100,7 @@ function ProductSearch() {
   size="lg"
   borderRadius="full"
   fontSize="md"
-  width={["90%", "500px", "800px"]} // Mobile: 90%, Tablet: 500px, Desktop: 800px
+  width={["200px", "500px", "800px"]} // Mobile: 90%, Tablet: 500px, Desktop: 800px
   maxWidth="1000px" // Prevents excessive stretching on ultra-wide screens
   mx="auto"
   paddingLeft="6"

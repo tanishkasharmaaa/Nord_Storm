@@ -103,11 +103,24 @@ function MainPageElements() {
         flexDirection={isLargerThan768 ? "row" : "column"}
         gap={4}
       >
-        <Image
-          src={NordStorm_logo}
-          alt="NordStorm Logo"
-          h={isLargerThan768 ? "80px" : "60px"}
-        />
+ <Box 
+  display="flex" 
+  alignItems="center" 
+  justifyContent="center"
+  minW="150px" // Ensures the logo always has a minimum width
+>
+  <Image
+    src={NordStorm_logo}
+    alt="NordStorm Logo"
+    h={["80px", "100px", "120px"]} // Mobile: 80px, Tablet: 100px, Desktop: 120px
+    w={["150px", "180px", "200px"]} // Width scales with height
+    objectFit="contain"
+    minH="80px" // Prevents logo from disappearing
+    maxH="150px" // Keeps logo proportional
+    minW="150px" // Prevents logo from shrinking too much
+  />
+</Box>
+
 
         <Search query={query} setQuery={setQuery} />
       </Flex>
