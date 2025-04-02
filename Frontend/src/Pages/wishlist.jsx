@@ -82,7 +82,6 @@ const navigate = useNavigate()
   }
 
   async function addToCart(selectedProduct) {
-    console.log("Selected Product:", selectedProduct);
 
     if (!selectedProduct) {
         console.error("Error: selectedProduct is undefined or null", selectedProduct);
@@ -94,7 +93,6 @@ const navigate = useNavigate()
         return { status: 400, data: { message: "Invalid product ID" }, ok: false };
     }
 
-    console.log("Adding to cart:", selectedProduct._id);
 
     const token = localStorage.getItem("authToken");
     if (!token) {
@@ -102,7 +100,7 @@ const navigate = useNavigate()
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/products/cartUpdate/${selectedProduct._id}`, {
+        const response = await fetch(`https://nord-storm.onrender.com/products/cartUpdate/${selectedProduct._id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
