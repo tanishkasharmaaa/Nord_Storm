@@ -156,99 +156,101 @@ const navigate = useNavigate()
       <Navbar />
       
       {wishlistItems.length === 0 ? (
-  <>
-    <Flex display={'block'} justify="center" align="center" p={2} px={5}>
-      <Heading
-        fontFamily="Poppins, sans-serif"
-        fontSize={["30px", "40px", "50px"]}
-        color="gray.400"
-        textAlign="center"
-        fontStyle={'italic'}
-      >
-        Add Something to wishlist
-      </Heading>
-    </Flex>
-    <Flex justify={'center'}>
-      <Button as={'button'} onClick={() => navigate('/')}>
-        GO BACK & ADD ITEMS
-      </Button>
-    </Flex>
-  </>
-) : (
-  <Grid
-    templateColumns={
-      isLargerThan1024
-        ? "repeat(5, 1fr)"
-        : isLargerThan768
-          ? "repeat(3, 1fr)"
-          : "repeat(2, 1fr)"
-    }
-    gap={6}
-    fontSize="15px"
-    mt={4}
-  >
-    {wishlistItems.map((product) => (
-      <Box
-        key={product._id}
-        p={4}
-        borderWidth="1px"
-        borderRadius="md"
-        overflow="hidden"
-        boxShadow="sm"
-      >
-        <Box display="flex" justifyContent="center">
-          <Image
-            boxSize="230px"
-            objectFit="cover"
-            src={product.images[0]}
-            alt={product.name}
-          />
-        </Box>
-        <Box>
-          <Button
-            w="100%"
-            backgroundColor="transparent"
-            color="white"
-            border="1px solid "
-            _hover={{
-              color: "blue.500",
-              border: "1px solid blue.500",
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              transition: "0.3s ease-in-out",
-            }}
-            onClick={() => handleDialog(product._id)}
-          >
-            QUICK VIEW
-          </Button>
-        </Box>
+        <>
+          <Flex display={"block"} justify="center" align="center" p={2} px={5}>
+            <Heading
+              fontFamily="Poppins, sans-serif"
+              fontSize={["30px", "40px", "50px"]}
+              color="gray.400"
+              textAlign="center"
+              fontStyle={"italic"}
+            >
+              Add Something to wishlist
+            </Heading>
+          </Flex>
+          <Flex justify={"center"}>
+            <Button as={"button"} onClick={() => navigate("/")}>
+              GO BACK & ADD ITEMS
+            </Button>
+          </Flex>
+        </>
+      ) : (
+        <Grid
+          templateColumns={{
+            base: "repeat(1, 1fr)", // Mobile (default)
+            sm: "repeat(2, 1fr)", // Small screens (min-width: 480px)
+            md: "repeat(3, 1fr)", // Medium screens (min-width: 768px)
+            lg: "repeat(4, 1fr)", // Large screens (min-width: 1024px)
+            xl: "repeat(5, 1fr)", // Extra large screens (min-width: 1280px)
+          }}
+          gap={6}
+          fontSize="15px"
+          mt={4}
+          px={4} // Padding for better spacing
+        >
+          {wishlistItems.map((product) => (
+            <Box
+              key={product._id}
+              p={4}
+              borderWidth="1px"
+              borderRadius="md"
+              overflow="hidden"
+              boxShadow="sm"
+              background="white"
+            >
+              <Box display="flex" justifyContent="center">
+                <Image
+                  boxSize="230px"
+                  objectFit="cover"
+                  src={product.images[0]}
+                  alt={product.name}
+                />
+              </Box>
+              <Box>
+                <Button
+                  w="100%"
+                  backgroundColor="transparent"
+                  color="white"
+                  border="1px solid "
+                  _hover={{
+                    color: "blue.500",
+                    border: "1px solid blue.500",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    transition: "0.3s ease-in-out",
+                  }}
+                  onClick={() => handleDialog(product._id)}
+                >
+                  QUICK VIEW
+                </Button>
+              </Box>
 
-        <Box fontFamily="Arial, sans-serif" pt={4}>
-          <Link to={`/product/${product.product_id}`}>
-            <Text fontWeight="bold" textDecoration={"underline"}>
-              {product.name}
-            </Text>
-          </Link>
-          <Text color={"grey"}>{product.brand}</Text>
-          <Text color="red" fontWeight="bold">
-            ${product.price}{" "}
-            <Text as="span" color="gray.500">{`${product.discount}% off`}</Text>
-          </Text>
-          <Box className="rating">
-            {Array.from({ length: 5 }, (_, i) => (
-              <Text
-                key={i}
-                as="span"
-                color={i < Math.floor(product.rating) ? "blue.500" : "gray.300"}
-              >
-                ★
-              </Text>
-            ))}
-          </Box>
-        </Box>
-      </Box>
-    ))}
-  </Grid>
-)}
+              <Box fontFamily="Arial, sans-serif" pt={4}>
+                <Link to={`/product/${product.product_id}`}>
+                  <Text fontWeight="bold" textDecoration={"underline"}>
+                    {product.name}
+                  </Text>
+                </Link>
+                <Text color={"grey"}>{product.brand}</Text>
+                <Text color="red" fontWeight="bold">
+                  ${product.price}{" "}
+                  <Text as="span" color="gray.500">{`${product.discount}% off`}</Text>
+                </Text>
+                <Box className="rating">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <Text
+                      key={i}
+                      as="span"
+                      color={i < Math.floor(product.rating) ? "blue.500" : "gray.300"}
+                    >
+                      ★
+                    </Text>
+                  ))}
+                </Box>
+              </Box>
+            </Box>
+          ))}
+        </Grid>
+      )}
 
 
       {/* Modal for Product Details */}
