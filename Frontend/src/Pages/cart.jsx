@@ -158,6 +158,7 @@ function Cart() {
     <>
       <MainPageEle />
       <Navbar />
+      
       <Flex direction={isLargerThan768 ? 'row' : 'column'} p={4}>
         <Box maxH={'500px'} zIndex={'auto'} flex={isLargerThan768 ? 2 : 1} mr={isLargerThan768 ? 6 : 0}>
         <Box maxH="500px" overflowY="auto" zIndex="auto" flex={isLargerThan768 ? 2 : 1} mr={isLargerThan768 ? 6 : 0}>
