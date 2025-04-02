@@ -23,7 +23,6 @@ router.get(
     const token = jwt.sign(
       { id: req.user._id, email: req.user.email, name: req.user.name },
       process.env.JWT_SECRET,
-      { expiresIn: "2d" }
     );
 
     // Redirect to frontend with token
