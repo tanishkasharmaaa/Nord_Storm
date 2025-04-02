@@ -3,7 +3,7 @@ import MainPageEle from '../Components/mainPageEle';
 import Navbar from '../Components/navbar';
 import {
   Box, Button, Flex, Image, Text, useMediaQuery, Modal, ModalBody, ModalContent, ModalHeader,
-  ModalCloseButton, ModalFooter, ModalOverlay, Select, Grid
+  ModalCloseButton, ModalFooter, ModalOverlay, Select, Grid,Heading
 } from '@chakra-ui/react';
 import {Link, useNavigate } from 'react-router-dom';
 import { Footer } from '../Components/footer';
@@ -188,7 +188,8 @@ function Cart() {
         </Flex>
       </Box>
     ))):(<>
-    <Text>No Product found</Text>
+    <Heading size="lg" textAlign="center">Add products to cart</Heading><br />
+    <Button onClick={()=>navigate("/")}>Go and add products</Button>
     </>)}
   </Grid>
 </Box>
