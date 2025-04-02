@@ -206,7 +206,7 @@ function Cart() {
               <Text fontWeight="bold" mt={2}>
                 Final Price: ${Math.floor(calculateTotalPrice())}
               </Text>
-              <Button  colorScheme="blue" mt={4} width="full" onClick={()=>navigate("/checkout")}>
+              <Button  colorScheme="blue" mt={4} width="full" onClick={cartItems.length==0?()=>alert("Add something to cart"):()=>navigate("/checkout")}>
                 Checkout
               </Button>
             </Box>
