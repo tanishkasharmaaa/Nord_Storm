@@ -3,7 +3,7 @@ import MainPageEle from '../Components/mainPageEle';
 import Navbar from '../Components/navbar';
 import {
   Box, Button, Flex, Image, Text, useMediaQuery, Modal, ModalBody, ModalContent, ModalHeader,
-  ModalCloseButton, ModalFooter, ModalOverlay, Select, Grid
+  ModalCloseButton, ModalFooter, ModalOverlay, Select, Grid,Heading
 } from '@chakra-ui/react';
 import {Link, useNavigate } from 'react-router-dom';
 import { Footer } from '../Components/footer';
@@ -188,14 +188,15 @@ function Cart() {
         </Flex>
       </Box>
     ))):(<>
-    <Text>No Product found</Text>
+    <Heading size="lg" textAlign="center">Add products to Wishlist</Heading><br />
+    <Button onClick={()=>navigate("/")}>Go and Add products</Button>
     </>)}
   </Grid>
 </Box>
 
         </Box>
 
-        <Box flex={1} mt={isLargerThan768 ? 0 : 4}>
+       <Box flex={1} mt={isLargerThan768 ? 0 : 4}>
           <Box borderWidth={1} p={4} borderRadius="lg" bgColor="white">
             <Text fontSize="lg" fontWeight="bold">Order Summary</Text>
             <Box mt={4}>
@@ -205,7 +206,7 @@ function Cart() {
               <Text fontWeight="bold" mt={2}>
                 Final Price: ${Math.floor(calculateTotalPrice())}
               </Text>
-              <Button  colorScheme="blue" mt={4} width="full" onClick={()=>navigate("/checkout")}>
+              <Button  colorScheme="blue" mt={4} width="full" onClick={cartItems.length==0?()=>alert("Add something to cart"):()=>navigate("/checkout")}>
                 Checkout
               </Button>
             </Box>
