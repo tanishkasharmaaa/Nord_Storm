@@ -127,12 +127,8 @@ const navigate = useNavigate()
         });
 
         const data = await response.json();
-        console.log("Cart update response:", data);
-
-        setIsModalOpen(false);
-
         alert("Removed from wishlist and added to cart");
-        
+        setIsModalOpen(false);
         handleWishlistData()
         
         return { status: response.status, data, ok: response.ok };
