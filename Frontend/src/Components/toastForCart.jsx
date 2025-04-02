@@ -42,7 +42,7 @@ function ToastForCart({ selectedProduct, quantity, AddProductToCart, selectSize 
     } 
     else {
       toast({
-        title: "Already Added",
+        title: "Login please",
         description: response?.data?.message || "Something went wrong! Please try again.",
         status: "error",
         duration: 3000,

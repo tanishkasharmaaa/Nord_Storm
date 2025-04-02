@@ -43,7 +43,7 @@ function ToastForWishlist({ selectedProduct, quantity, AddProductToWishlist, sel
     } 
     else {
       toast({
-        title: "Already Added",
+        title: "Login Please",
         description: response?.data?.message || "Something went wrong! Please try again.",
         status: "error",
         duration: 3000,
