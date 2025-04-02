@@ -184,7 +184,7 @@ const navigate = useNavigate()
   fontSize="15px"
   mt={4}
 >
-  {wishlistItems.map((product) => (
+  
     <Box
       key={product._id}
       p={4}
@@ -248,7 +248,7 @@ const navigate = useNavigate()
         </Box>
       </Box>
     </Box>
-  ))}
+  
 </Grid>
 )) )}
       
