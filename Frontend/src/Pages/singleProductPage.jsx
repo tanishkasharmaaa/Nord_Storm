@@ -232,9 +232,7 @@ async function addToWishlist() {
             isClosable: true,
             position: "top-right",
         });
-        setTimeout(() => {
-            window.location.href = "/login"; // 🔹 Redirect to login page (optional)
-        }, 2000);
+       
         return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
     }
 
