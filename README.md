@@ -60,6 +60,15 @@ Follow these steps to set up the project locally:
 
 ---
 
+## 🎥 Tutorial  
+Watch the full tutorial on how to use the website:  
+
+[![Nord Strom Rack Tutorial](https://cdn-icons-png.flaticon.com/512/174/174857.png)](https://www.linkedin.com/posts/tanishka-304953274_fullstackdevelopment-reactjs-nodejs-activity-7313351174504517632-GeSr?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEMPVvQBpboMeA3e-ruxDSlTaqdlwCHv1TQ)  
+
+🔗 **[Click here to watch the video](https://www.linkedin.com/posts/tanishka-304953274_fullstackdevelopment-reactjs-nodejs-activity-7313351174504517632-GeSr?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEMPVvQBpboMeA3e-ruxDSlTaqdlwCHv1TQ)**  
+
+---
+
 ## 📬 Contact  
 Created by **[Tanishka Sharma](https://github.com/tanishkasharmaaa)** – Feel free to connect on **[LinkedIn](https://www.linkedin.com/in/tanishka-sharma-304953274/)!**  
 
