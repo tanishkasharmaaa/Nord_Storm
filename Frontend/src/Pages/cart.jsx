@@ -78,22 +78,53 @@ function Cart() {
   };
 
   async function addToWishlist(selectedProduct) {
+    const toast = useToast(); // Initialize the toast
+
     console.log("Selected Product:", selectedProduct);
 
     if (!selectedProduct) {
         console.error("Error: selectedProduct is undefined or null", selectedProduct);
+        toast({
+            title: "Error",
+            description: "Invalid product object",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+        });
         return { status: 400, data: { message: "Invalid product object" }, ok: false };
     }
 
     if (!selectedProduct._id) {
         console.error("Error: Product ID is undefined", selectedProduct);
+        toast({
+            title: "Error",
+            description: "Invalid product ID",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+        });
         return { status: 400, data: { message: "Invalid product ID" }, ok: false };
     }
 
-    console.log("Adding to cart:", selectedProduct._id);
+    console.log("Adding to wishlist:", selectedProduct._id);
 
     const token = localStorage.getItem("authToken");
+
+    // ✅ If no token is found, show toast & redirect to login
     if (!token) {
+        toast({
+            title: "Unauthorized",
+            description: "You must be logged in to add items to your wishlist.",
+            status: "warning",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+        });
+        setTimeout(() => {
+            window.location.href = "/login"; // 🔹 Redirect to login page (if applicable)
+        }, 2000);
         return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
     }
 
@@ -125,16 +156,43 @@ function Cart() {
         const data = await response.json();
         console.log("Wishlist update response:", data);
 
+        if (!response.ok) {
+            toast({
+                title: "Failed to Add",
+                description: data.message || "Something went wrong.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top",
+            });
+            return { status: response.status, data, ok: false };
+        }
+
         setIsModalOpen(false);
 
-        alert("Added to wishlist");
-        
-        handleCartData()
-        
-        return { status: response.status, data, ok: response.ok };
+        toast({
+            title: "Success",
+            description: "Item added to wishlist!",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+        });
+
+        handleCartData(); // 🔹 Refresh cart or UI update
+
+        return { status: response.status, data, ok: true };
 
     } catch (error) {
         console.error("Error adding to wishlist:", error);
+        toast({
+            title: "Server Error",
+            description: error.message || "Something went wrong.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+        });
         return { status: 500, data: { message: error.message }, ok: false };
     }
 }

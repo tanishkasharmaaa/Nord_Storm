@@ -116,188 +116,213 @@ const addReview = async () => {
     const token = localStorage.getItem("authToken");
     const username = localStorage.getItem("username");
 
-  
+    // ✅ Handle missing token (Ask user to log in)
     if (!token) {
-      toast({
-        title: "Please Login",
-        description: response?.data?.message || "Something went wrong! Please try again.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "top-right",
-      });
+        toast({
+            title: "Login Required",
+            description: "Please log in to add items to your cart.",
+            status: "warning",
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
+        });
+        setTimeout(() => {
+            window.location.href = "/login"; // 🔹 Redirect to login page (optional)
+        }, 2000);
+        return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
     }
-    if (!selectSize || selectSize.trim() === "") {  
-      toast({
-        title: "Size Required",
-        description: "Please select a size before adding to cart.",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-        position: "top-right",
-      });
-      return;  // ⛔ STOP EXECUTION if no size is selected
+
+    // ✅ Handle missing size
+    if (!selectSize || selectSize.trim() === "") {
+        toast({
+            title: "Size Required",
+            description: "Please select a size before adding to cart.",
+            status: "warning",
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
+        });
+        return;
     }
+
     try {
-      const response = await fetch(
-        `https://nord-storm.onrender.com/products/cartUpdate/${product._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            product_id: product._id,
-            username: username || "Guest",
-            name: product.name || "Unknown",
-            description: product.description || "No description",
-            price: product.price || 0,
-            category: product.category || "Uncategorized",
-            brand: product.brand || "Unknown",
-            size: selectSize,
-            color: product.color || "N/A",
-            discount: product.discount || 0,
-            stock: quantity || 1,
-            images: product.images || [],
-            rating: product.rating || 0,
-            reviews: product.reviews || [],
-          }),
+        const response = await fetch(
+            `https://nord-storm.onrender.com/products/cartUpdate/${product._id}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    product_id: product._id,
+                    username: username || "Guest",
+                    name: product.name || "Unknown",
+                    description: product.description || "No description",
+                    price: product.price || 0,
+                    category: product.category || "Uncategorized",
+                    brand: product.brand || "Unknown",
+                    size: selectSize,
+                    color: product.color || "N/A",
+                    discount: product.discount || 0,
+                    stock: quantity || 1,
+                    images: product.images || [],
+                    rating: product.rating || 0,
+                    reviews: product.reviews || [],
+                }),
+            }
+        );
+
+        const data = await response.json();
+
+        if (response?.status === 200) {
+            toast({
+                title: "Product Added",
+                description: `${product.name} has been added to your cart.`,
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+                position: "top-right",
+            });
+        } else if (response?.status === 409) {
+            toast({
+                title: "Already in Cart",
+                description: `${product.name} is already in your cart.`,
+                status: "info",
+                duration: 3000,
+                isClosable: true,
+                position: "top-right",
+            });
+        } else {
+            toast({
+                title: "Error",
+                description: response?.data?.message || "Something went wrong! Please try again.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top-right",
+            });
         }
-      );
-      
-      const data = await response.json();
 
-      if (response?.status === 200) {
-        toast({
-          title: "Product Added",
-          description: `${product.name} has been added to your cart.`,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top-right",
-        });
-      } 
-      else if (response?.status === 409) {
-        toast({
-          title: "Already in Cart",
-          description: `${product.name} is already in your cart.`,
-          status: "info",
-          duration: 3000,
-          isClosable: true,
-          position: "top-right",
-        });
-      } 
-      else {
-        toast({
-          title: "Already Added",
-          description: response?.data?.message || "Something went wrong! Please try again.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-          position: "top-right",
-        });
-      }
-     
-      return { status: response.status, data, ok: response.ok };
+        return { status: response.status, data, ok: response.ok };
     } catch (error) {
-      return { status: 500, data: { message: error.message }, ok: false };
+        toast({
+            title: "Server Error",
+            description: error.message || "Something went wrong.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
+        });
+        return { status: 500, data: { message: error.message }, ok: false };
     }
-  }
+}
 
-  async function addToWishlist() {
+async function addToWishlist() {
     const token = localStorage.getItem("authToken");
     const username = localStorage.getItem("username");
 
-  
+    // ✅ Handle missing token (Ask user to log in)
     if (!token) {
-      if (!token) {
         toast({
-          title: "Please Login",
-          description: response?.data?.message || "Something went wrong! Please try again.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-          position: "top-right",
+            title: "Login Required",
+            description: "Please log in to add items to your wishlist.",
+            status: "warning",
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
         });
+        setTimeout(() => {
+            window.location.href = "/login"; // 🔹 Redirect to login page (optional)
+        }, 2000);
+        return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
     }
-    if (!selectSize || selectSize.trim() === "") {  
-      toast({
-        title: "Size Required",
-        description: "Please select a size before adding to cart.",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-        position: "top-right",
-      });
-      return;  
-    }
-    try {
-      const response = await fetch(
-        `https://nord-storm.onrender.com/products/wishlistUpdate/${product._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            product_id: product._id,
-            username: username || "Guest",
-            name: product.name || "Unknown",
-            description: product.description || "No description",
-            price: product.price || 0,
-            category: product.category || "Uncategorized",
-            brand: product.brand || "Unknown",
-            size: selectSize,
-            color: product.color || "N/A",
-            discount: product.discount || 0,
-            stock: quantity || 1,
-            images: product.images || [],
-            rating: product.rating || 0,
-            reviews: product.reviews || [],
-          }),
-        }
-      );
-      
-      const data = await response.json();
 
-      if (response?.status === 200) {
+    // ✅ Handle missing size
+    if (!selectSize || selectSize.trim() === "") {
         toast({
-          title: "Product Added",
-          description: `${product.name} has been added to your wishlist.`,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top-right",
+            title: "Size Required",
+            description: "Please select a size before adding to wishlist.",
+            status: "warning",
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
         });
-      } 
-      else if (response?.status === 409) {
-        toast({
-          title: "Already in Wishlist",
-          description: `${product.name} is already in your cart.`,
-          status: "info",
-          duration: 3000,
-          isClosable: true,
-          position: "top-right",
-        });
-      } 
-      else {
-        toast({
-          title: "Already Added",
-          description: response?.data?.message || "Something went wrong! Please try again.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-          position: "top-right",
-        });
-      }
-      console.log(data)
-      return { status: response.status, data, ok: response.ok };
-    } catch (error) {
-      return { status: 500, data: { message: error.message }, ok: false };
+        return;
     }
-  }
+
+    try {
+        const response = await fetch(
+            `https://nord-storm.onrender.com/products/wishlistUpdate/${product._id}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    product_id: product._id,
+                    username: username || "Guest",
+                    name: product.name || "Unknown",
+                    description: product.description || "No description",
+                    price: product.price || 0,
+                    category: product.category || "Uncategorized",
+                    brand: product.brand || "Unknown",
+                    size: selectSize,
+                    color: product.color || "N/A",
+                    discount: product.discount || 0,
+                    stock: quantity || 1,
+                    images: product.images || [],
+                    rating: product.rating || 0,
+                    reviews: product.reviews || [],
+                }),
+            }
+        );
+
+        const data = await response.json();
+
+        if (response?.status === 200) {
+            toast({
+                title: "Product Added",
+                description: `${product.name} has been added to your wishlist.`,
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+                position: "top-right",
+            });
+        } else if (response?.status === 409) {
+            toast({
+                title: "Already in Wishlist",
+                description: `${product.name} is already in your wishlist.`,
+                status: "info",
+                duration: 3000,
+                isClosable: true,
+                position: "top-right",
+            });
+        } else {
+            toast({
+                title: "Error",
+                description: response?.data?.message || "Something went wrong! Please try again.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top-right",
+            });
+        }
+
+        return { status: response.status, data, ok: response.ok };
+    } catch (error) {
+        toast({
+            title: "Server Error",
+            description: error.message || "Something went wrong.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
+        });
+        return { status: 500, data: { message: error.message }, ok: false };
+    }
+}
 
   useEffect(() => {
     getProduct();
