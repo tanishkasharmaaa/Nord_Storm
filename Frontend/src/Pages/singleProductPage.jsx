@@ -230,7 +230,7 @@ const addReview = async () => {
         isClosable: true,
         position: "top-right",
       });
-      return;  // ⛔ STOP EXECUTION if no size is selected
+      return;  
     }
     try {
       const response = await fetch(
