@@ -118,7 +118,14 @@ const addReview = async () => {
 
   
     if (!token) {
-      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+      toast({
+        title: "Please Login",
+        description: response?.data?.message || "Something went wrong! Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
     }
     if (!selectSize || selectSize.trim() === "") {  
       toast({
@@ -191,7 +198,7 @@ const addReview = async () => {
           position: "top-right",
         });
       }
-      console.log(data)
+     
       return { status: response.status, data, ok: response.ok };
     } catch (error) {
       return { status: 500, data: { message: error.message }, ok: false };
@@ -204,7 +211,15 @@ const addReview = async () => {
 
   
     if (!token) {
-      return { status: 401, data: { message: "Unauthorized: No token provided" }, ok: false };
+      if (!token) {
+        toast({
+          title: "Please Login",
+          description: response?.data?.message || "Something went wrong! Please try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
     }
     if (!selectSize || selectSize.trim() === "") {  
       toast({
