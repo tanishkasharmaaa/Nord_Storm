@@ -100,10 +100,9 @@ function ProductSearch() {
   size="lg"
   borderRadius="none"
   fontSize={["sm", "md", "lg"]}  
-  width={["190px", "500px", "800px"]}  
-  maxWidth="1000px"  
+  width={{base:"200px",md:"500px",lg:"800px"}}  
   mx="auto"
-  paddingLeft="6"
+  
   height={["40px", "45px", "50px"]}  
   bg="white"
   color="black"

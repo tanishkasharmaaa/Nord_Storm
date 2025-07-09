@@ -1,4 +1,5 @@
-import { Box, Flex, Image, useMediaQuery, Text} from "@chakra-ui/react";
+
+import { Box, Flex, Image, useMediaQuery, Text, Spacer} from "@chakra-ui/react";
 import NordStorm_logo from "../assets/NordStorm_logo.png";
 import Search from "../Components/search";
 import Suggestions from "../Components/suggestion";
@@ -127,7 +128,7 @@ function MainPageElements() {
 </Link>
 
 </Box>
-
+<Spacer/>
 
         <Search query={query} setQuery={setQuery} />
       </Flex>

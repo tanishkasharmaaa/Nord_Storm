@@ -53,7 +53,7 @@ const Navbar = () => {
   };
 
   return (
-    <Box bg="gray.100" py={4} px={6} boxShadow="md">
+    <Box bg="none">
       <Flex justify="space-between" align="center" maxW="1200px" mx="auto">
         {isMobile ? (
           <Button onClick={onOpen} variant="ghost" colorScheme="blue">
