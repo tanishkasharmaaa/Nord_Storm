@@ -96,14 +96,14 @@ function MainPageElements() {
         id="head"
         align="center"
         justify="space-between"
-        px={6}
-        py={4}
+        // px={6}
+        // py={4}
         bg="white"
         position="relative"
-        zIndex="10"
+        // zIndex="10"
         ref={searchRef}
         flexDirection={isLargerThan768 ? "row" : "column"}
-        gap={4}
+        // gap={4}
       >
  <Box 
   display="flex" 
@@ -118,8 +118,8 @@ function MainPageElements() {
   h={["20px", "100px", "120px"]}  
   w={["80px", "200px", "240px"]} 
   objectFit="contain"
-  maxH="130px"  
-  maxW="260px" 
+  // maxH="130px"  
+  // maxW="260px" 
   minH="70px"  
   minW="160px"  
   display="block"  

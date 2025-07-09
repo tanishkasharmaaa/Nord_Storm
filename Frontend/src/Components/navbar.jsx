@@ -18,6 +18,8 @@ import {
   VStack,
   useDisclosure,
   useMediaQuery,
+  Text,
+
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -54,58 +56,22 @@ const Navbar = () => {
 
   return (
     <Box bg="none">
-      <Flex justify="space-between" align="center" maxW="1200px" mx="auto">
+      {/* <Flex justifyContent="space-between" align="center" maxW="1200px" mx="auto"> */}
         {isMobile ? (
           <Button onClick={onOpen} variant="ghost" colorScheme="blue">
             <HamburgerIcon w={6} h={6} />
           </Button>
-        ) : (
-          <Flex gap={6} align="center">
-            {categories.map((category) => (
-              <Popover
-                key={category}
-                isOpen={selectedCategory === category}
-                onClose={() => setSelectedCategory(null)}
-              >
-                <PopoverTrigger>
-                  <Button
-                    bg="transparent"
-                    _hover={{ color: "blue.500", textDecoration: "underline" }}
-                    onClick={() =>
-                      setSelectedCategory(
-                        selectedCategory === category ? null : category
-                      )
-                    }
-                  >
-                    {category}
-                  </Button>
-                </PopoverTrigger>
-                <Portal>
-                  <PopoverContent
-                    boxShadow="xl"
-                    borderRadius="lg"
-                    p={4}
-                    bg="white"
-                    width={"800px"}
-                    height={"400px"}
-                  >
-                    <PopoverArrow />
-                    <PopoverBody>
-                      <Link
-                        to={`/${category}`}
-                        onClick={() => setSelectedCategory(null)}
-                      >
-                        <Image
-                          src={categoriesImage[category]}
-                          alt={category}
-                          width="700px"
-                        />
-                      </Link>
-                    </PopoverBody>
-                  </PopoverContent>
-                </Portal>
-              </Popover>
-            ))}
+        ) : (<>
+          <Flex alignItems={'center'} justifyContent={'space-between'}  align="center" pl={4} pr={4}>
+            {categories.map((category) => (<Box key={category}>
+             <Box>
+              <Text fontWeight={'semibold'}>
+                <Link to={`/${category}`}>
+                {category}
+                </Link>
+              </Text>
+             </Box>
+           </Box> ))}
             <Button
               bg="transparent"
               _hover={{ color: "blue.500", textDecoration: "underline" }}
@@ -134,8 +100,8 @@ const Navbar = () => {
               </Button>
             )}
           </Flex>
-        )}
-      </Flex>
+        </>)}
+      {/* </Flex> */}
 
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="xs">
         <DrawerOverlay />
